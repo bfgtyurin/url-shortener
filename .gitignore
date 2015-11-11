@@ -1,0 +1,44 @@
+# Project Specific
+/src/main/webapp/dist
+/src/main/webapp/bower_components
+/node_modules/
+tomcat.*
+
+# General temp files
+.DS_Store
+*.ser
+*.pyc
+
+# Eclipse project files
+.settings
+.classpath
+.project
+.metadata
+.mymetadata
+.springBeans
+.gradle
+
+# IntelliJ Idea project files
+.idea
+*.iml
+*.ipr
+*.iws
+*.war
+*.jar
+
+#log files
+*.log*
+
+# Netbeans project files
+nbproject
+
+# Always ignore these directories/files
+target
+logs
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+test-output
+bin

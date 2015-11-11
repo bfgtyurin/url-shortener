@@ -1,0 +1,12 @@
+{
+  "name": "url-shortener",
+  "version": "0.0.1",
+  "authors": [
+    "Vladimir Tyurin <bfg.tyurin@gmail.com>"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "bootstrap": "~3.3.5"
+  }
+}
