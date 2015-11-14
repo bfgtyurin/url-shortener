@@ -1,15 +1,15 @@
 package com.vtyurin.app.db;
 
+import org.h2.jdbcx.JdbcConnectionPool;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class DBHelper {
 
-    private static final String createTable = "CREATE TABLE Links (id INTEGER NOT NULL, fullUrl varchar(255), shortUrl varchar(255))";
+    private static final String JDBC_ULR = "jdbc:h2:tcp://localhost/~/test";
 
-    Connection connection;
+    JdbcConnectionPool pool;
 
     public DBHelper() {
         init();
@@ -20,40 +20,11 @@ public class DBHelper {
     }
 
     private void init() {
-        try {
-            Class.forName("org.h2.Driver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        Throwable firstException = null;
-        try {
-            connection = DriverManager.getConnection("jdbc:hsqldb:mydatabase", "SA", "");
-            connection.createStatement().execute(createTable);
-            PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Links VALUES (fullUrl='hellodb')");
-            preparedStatement.execute();
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            firstException = e;
-            throw new RuntimeException("Smth bad happened", e);
-        } finally {
-            try {
-                if(firstException != null) {
-                    connection.rollback();
-                }
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                if(firstException == null){
-                    throw new RuntimeException("Smth bad happened", e);
-                }
-            }
-        }
-
+        pool = JdbcConnectionPool.create(JDBC_ULR, "SA", "");
     }
 
-    public Connection getConnection() {
+    public Connection getConnection() throws SQLException {
 
-        return connection;
+        return pool.getConnection();
     }
 }
