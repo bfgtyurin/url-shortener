@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/")
+//@WebServlet("/")
 public class HomeController extends HttpServlet {
 
     private final static Logger LOGGER = Logger.getLogger(AjaxTestController.class);

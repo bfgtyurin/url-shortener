@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-public class DBHelperTest {
+public class ConnectionUtilTest {
 
     @Test
     public void classForNameTest() throws ClassNotFoundException {
