@@ -47,7 +47,7 @@ public class Link {
     @Override
     public String toString() {
         return "Link{" +
-                ", fullUrl='" + fullUrl + '\'' +
+                "fullUrl='" + fullUrl + '\'' +
                 ", shortUrl='" + shortUrl + '\'' +
                 ", clicks=" + clicks +
                 '}';
