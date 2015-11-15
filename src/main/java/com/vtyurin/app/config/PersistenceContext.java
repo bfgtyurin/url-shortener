@@ -1,12 +1,14 @@
-package com.vtyurin.app.util;
+package com.vtyurin.app.config;
 
+import com.vtyurin.app.util.ConnectionUtil;
 import org.apache.log4j.Logger;
 import org.h2.jdbcx.JdbcConnectionPool;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 
-public class ConnectionUtil {
-
+@Configuration
+public class PersistenceContext {
     private static Logger LOGGER = Logger.getLogger(ConnectionUtil.class);
 
     private static final String PROPERTY_JDBC_DRIVER = "jdbc.driverClassName";
@@ -14,18 +16,10 @@ public class ConnectionUtil {
     private static final String PROPERTY_JDBC_USER = "jdbc.user";
     private static final String PROPERTY_JDBC_PASSWORD = "jdbc.password";
 
-    @Autowired
-    Environment env;
-
-    /**
-     * Creates a <code>JdbcConnectionPool</code> object
-     * based on @Autowired<code>Environment</code> variable.
-     * Then initialize <code>JdbcConnectionPool</code> with these properties.
-     *
-     * @return a new <code>Connection</code> object from <code>JdbcConnectionPool</code>
-     */
-    public JdbcConnectionPool getDataSource() {
+    @Bean
+    JdbcConnectionPool dataSource(Environment env) {
         String driverName = env.getRequiredProperty(PROPERTY_JDBC_DRIVER);
+        System.out.println(driverName);
         try {
             Class.forName(driverName);
         } catch (ClassNotFoundException e) {

@@ -7,6 +7,9 @@ public class Link {
     private String shortUrl;
     private int clicks;
 
+    public Link() {
+    }
+
     public Link(String fullUrl, String shortUrl, int clicks) {
         this.fullUrl = fullUrl;
         this.shortUrl = shortUrl;
