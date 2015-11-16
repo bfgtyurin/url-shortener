@@ -28,17 +28,25 @@ public class LinkDao {
         Objects.requireNonNull(link);
 
         try (Connection connection = dataSource.getConnection()) {
+
+            connection.setAutoCommit(false);
             try (PreparedStatement pst = connection.prepareStatement(INSERT_STATEMENT)) {
                 int idx = 1;
                 pst.setInt(idx++, link.getClicks());
                 pst.setString(idx++, link.getFullUrl());
                 pst.setString(idx, link.getShortUrl());
                 pst.execute();
+
+                connection.commit();
                 LOGGER.info(link + " persisted");
             } catch (SQLException e) {
                 LOGGER.error("Could not execute INSERT PreparedStatement", e);
-                e.printStackTrace();
+                connection.rollback();
+                throw e;
+            } finally {
+                connection.setAutoCommit(true);
             }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -58,7 +66,7 @@ public class LinkDao {
                 link.setShortUrl(result.getString("shortUrl"));
             } catch (SQLException e) {
                 LOGGER.error("Could not execute SELECT PreparedStatement");
-                e.printStackTrace();
+                throw e;
             }
         } catch (SQLException e) {
             e.printStackTrace();
