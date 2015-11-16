@@ -1,6 +1,7 @@
 ##### Prerequisites
 * JDK 8 or later
 * Maven 3.0+
+* Node.js for npm
 
 ##### Clone
 ```
