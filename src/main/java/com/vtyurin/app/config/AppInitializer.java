@@ -15,7 +15,7 @@ public class AppInitializer implements WebApplicationInitializer {
         servletContext.addListener(new ContextLoaderListener(getContext()));
 
         ServletRegistration.Dynamic ajaxTestController = servletContext.addServlet("linkController", HttpRequestHandlerServlet.class);
-        ajaxTestController.addMapping("/link");
+        ajaxTestController.addMapping("/shorten");
     }
 
     private AnnotationConfigWebApplicationContext getContext() {

@@ -30,7 +30,7 @@ $(function() {
     sendLink: function () {
       return $.ajax({
         context: this,
-        url: "link",
+        url: "shorten",
         data: this.shortenForm.serialize()
       });
     }

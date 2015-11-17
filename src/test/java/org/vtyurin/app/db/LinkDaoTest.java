@@ -24,6 +24,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -65,24 +66,53 @@ public class LinkDaoTest {
 
     @Test
     public void persistTest() throws SQLException {
-        String fullUrlValue = "http://site.com";
-        String shortUrlValue = "12345zX";
-        Link link = new Link(fullUrlValue, shortUrlValue, 0);
+        String fullURLValue = "http://site.com";
+        String shortURLValue = "12345zX";
+        Link link = new Link(fullURLValue, shortURLValue, 0);
         linkDao.persist(link);
 
         PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Links WHERE fullUrl=?");
-        preparedStatement.setString(1, fullUrlValue);
+        preparedStatement.setString(1, fullURLValue);
         ResultSet resultSet = preparedStatement.executeQuery();
         assertEquals(resultSet.getFetchSize(), 0);
         assertTrue(resultSet.next());
-        assertEquals(shortUrlValue, resultSet.getString("shortUrl"));
+        assertEquals(shortURLValue, resultSet.getString("shortUrl"));
     }
 
     @Test
-    public void getByShortUrl() {
-        String shortUrl = "12345aS";
-        Link link = linkDao.getByShortUrl(shortUrl);
-        assertEquals("https://google.com", link.getFullUrl());
+    public void getByFullURLTest() {
+        String fullURL = "https://google.com";
+        Link link  = linkDao.getByFullURL(fullURL);
+        assertEquals("12345aS", link.getShortURL());
+        assertEquals(10, link.getClicks());
+    }
+
+    @Test
+    public void getByShortURLTest() {
+        String shortURL = "12345aS";
+        Link link = linkDao.getByShortUrl(shortURL);
+        assertEquals("https://google.com", link.getFullURL());
+    }
+
+    @Test
+    public void getByShortUrlWithNotExistValue() {
+        String shortURL = "mmmmmmm";
+        Link link = linkDao.getByShortUrl(shortURL);
+        assertNull(link.getFullURL());
+        assertNull(link.getShortURL());
+    }
+
+    @Test
+    public void updateTest() {
+        String fullURL = "https://google.com";
+        Link link = linkDao.getByFullURL(fullURL);
+        long clicks = link.getClicks();
+        link.setId(1);
+        link.setClicks(clicks + 1);
+        linkDao.update(link);
+        link = linkDao.getByFullURL(fullURL);
+
+        assertEquals(clicks + 1, link.getClicks());
     }
 
 }

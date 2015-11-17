@@ -1,4 +1,4 @@
-CREATE TABLE Links (id INTEGER NOT NULL AUTO_INCREMENT, clicks INTEGER, fullUrl VARCHAR(255), shortUrl VARCHAR(255));
+CREATE TABLE Links (id INTEGER NOT NULL AUTO_INCREMENT, clicks INTEGER, fullURL VARCHAR(255), shortURL VARCHAR(255));
 
-INSERT INTO Links (fullUrl, shortUrl) VALUES ('https://google.com', '12345aS');
-INSERT INTO Links (fullUrl, shortUrl) VALUES ('https://yandex.com', '54321Sa');
+INSERT INTO Links (fullURL, shortURL, clicks) VALUES ('https://google.com', '12345aS', 10);
+INSERT INTO Links (fullURL, shortURL) VALUES ('https://yandex.com', '54321Sa');

@@ -2,7 +2,8 @@ package com.vtyurin.app.controller;
 
 import com.vtyurin.app.dao.LinkDao;
 import com.vtyurin.app.model.Link;
-import com.vtyurin.app.util.RandomSequenceGenerator;
+import com.vtyurin.app.util.SequenceGenerator;
+import com.vtyurin.app.util.URL;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.HttpRequestHandler;
@@ -15,6 +16,8 @@ import java.io.IOException;
 public class LinkController implements HttpRequestHandler {
     private final static Logger LOGGER = Logger.getLogger(LinkController.class);
 
+    private String domain;
+
     @Autowired
     private LinkDao linkDao;
 
@@ -23,12 +26,40 @@ public class LinkController implements HttpRequestHandler {
         final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.handleRequest";
         LOGGER.info(METHOD_NAME + ": fullLink from request = " + req.getParameter("link"));
 
+        domain = req.getServerName();
         String fullLink = req.getParameter("link");
-        String generated = RandomSequenceGenerator.generate();
-        Link link = new Link(fullLink, generated, 0);
-        linkDao.persist(link);
+        handleData(fullLink, resp);
+    }
 
-        resp.getOutputStream().write("shortenLinkFromServlet".getBytes());
+    private void handleData(String fullURL, HttpServletResponse resp) throws IOException {
+        if (URL.isValid(fullURL)) {
+            sendNormalResponse(fullURL, resp);
+        } else {
+            sendWarningResponse(resp);
+            LOGGER.info("Link from user is invalid");
+        }
+    }
+
+    private void sendWarningResponse(HttpServletResponse resp) throws IOException {
+        resp.getOutputStream().write("This is not a valid URL".getBytes());
+    }
+
+    private void sendNormalResponse(String fullURL, HttpServletResponse resp) throws IOException {
+        Link link = linkDao.getByFullURL(fullURL);
+        if (link.getId() != 0) {
+            resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
+
+            LOGGER.info("Just return existing shortURL " + link);
+        } else {
+            String generated = SequenceGenerator.generate();
+            link.setFullURL(fullURL);
+            link.setShortURL(generated);
+            link.setClicks(0);
+            linkDao.persist(link);
+            resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
+
+            LOGGER.info("Create a new shortURL " + link);
+        }
     }
 
 }
