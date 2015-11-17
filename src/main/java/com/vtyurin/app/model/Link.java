@@ -3,16 +3,16 @@ package com.vtyurin.app.model;
 public class Link {
 
     private long id;
-    private String fullUrl;
-    private String shortUrl;
-    private int clicks;
+    private String fullURL;
+    private String shortURL;
+    private long clicks;
 
     public Link() {
     }
 
-    public Link(String fullUrl, String shortUrl, int clicks) {
-        this.fullUrl = fullUrl;
-        this.shortUrl = shortUrl;
+    public Link(String fullURL, String shortURL, int clicks) {
+        this.fullURL = fullURL;
+        this.shortURL = shortURL;
     }
 
     public long getId() {
@@ -23,35 +23,35 @@ public class Link {
         this.id = id;
     }
 
-    public String getFullUrl() {
-        return fullUrl;
+    public String getFullURL() {
+        return fullURL;
     }
 
-    public void setFullUrl(String fullUrl) {
-        this.fullUrl = fullUrl;
+    public void setFullURL(String fullURL) {
+        this.fullURL = fullURL;
     }
 
-    public String getShortUrl() {
-        return shortUrl;
+    public String getShortURL() {
+        return shortURL;
     }
 
-    public void setShortUrl(String shortUrl) {
-        this.shortUrl = shortUrl;
+    public void setShortURL(String shortURL) {
+        this.shortURL = shortURL;
     }
 
-    public int getClicks() {
+    public long getClicks() {
         return clicks;
     }
 
-    public void setClicks(int clicks) {
+    public void setClicks(long clicks) {
         this.clicks = clicks;
     }
 
     @Override
     public String toString() {
         return "Link{" +
-                "fullUrl='" + fullUrl + '\'' +
-                ", shortUrl='" + shortUrl + '\'' +
+                "fullURL='" + fullURL + '\'' +
+                ", shortURL='" + shortURL + '\'' +
                 ", clicks=" + clicks +
                 '}';
     }
