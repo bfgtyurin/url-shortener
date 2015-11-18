@@ -45,21 +45,9 @@ public class LinkController implements HttpRequestHandler {
     }
 
     private void sendNormalResponse(String fullURL, HttpServletResponse resp) throws IOException {
-        Link link = linkDao.getByFullURL(fullURL);
-        if (link.getId() != 0) {
-            resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
-
-            LOGGER.info("Just return existing shortURL " + link);
-        } else {
-            String generated = SequenceGenerator.generate();
-            link.setFullURL(fullURL);
-            link.setShortURL(generated);
-            link.setClicks(0);
-            linkDao.persist(link);
-            resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
-
-            LOGGER.info("Create a new shortURL " + link);
-        }
+        Link link = new Link(fullURL, "", 0);
+        linkDao.persistWithTransaction(link);
+        resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
     }
 
 }

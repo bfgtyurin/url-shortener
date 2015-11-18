@@ -10,7 +10,7 @@ public class Link {
     public Link() {
     }
 
-    public Link(String fullURL, String shortURL, int clicks) {
+    public Link(String fullURL, String shortURL, long clicks) {
         this.fullURL = fullURL;
         this.shortURL = shortURL;
     }
@@ -49,10 +49,10 @@ public class Link {
 
     @Override
     public String toString() {
-        return "Link{" +
-                "fullURL='" + fullURL + '\'' +
-                ", shortURL='" + shortURL + '\'' +
-                ", clicks=" + clicks +
-                '}';
+        return "Link {id: " + id +
+                ", fullURL:'" + fullURL + '\'' +
+                ", shortURL:'" + shortURL + '\'' +
+                ", clicks:" + clicks +
+                "\'}'";
     }
 }
