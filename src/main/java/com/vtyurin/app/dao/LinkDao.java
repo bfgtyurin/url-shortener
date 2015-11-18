@@ -31,7 +31,8 @@ public class LinkDao {
         Link newLink = new Link(link.getFullURL(), link.getShortURL(), link.getClicks());
         try (Connection connection = dataSource.getConnection()) {
 
-            initializeIfFullUrlExist(connection, newLink);
+            newLink = initializeIfFullUrlExist(connection, newLink);
+            LOGGER.info("Checking if link already in DB = " + newLink);
             if (newLink.getId() == 0) {
                 do {
                     newLink.setShortURL(SequenceGenerator.generate());
@@ -44,16 +45,18 @@ public class LinkDao {
         }
     }
 
-    private void initializeIfFullUrlExist(Connection connection, Link link) throws SQLException {
+    private Link initializeIfFullUrlExist(Connection connection, Link link) throws SQLException {
         try (PreparedStatement pst = connection.prepareStatement(SELECT_BY_FULL_URL_STATEMENT)) {
             pst.setString(1, link.getFullURL());
             ResultSet resultSet = pst.executeQuery();
             if (resultSet.isBeforeFirst()) {
-                initializeLink(resultSet);
+                link = initializeLink(resultSet);
             }
         } catch (SQLException e) {
             LOGGER.error("Could not execute SELECT PreparedStatement");
         }
+
+        return link;
     }
 
     public boolean shortUrlExist(Connection connection, String shortURL) throws SQLException {

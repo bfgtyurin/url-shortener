@@ -47,6 +47,7 @@ public class LinkController implements HttpRequestHandler {
     private void sendNormalResponse(String fullURL, HttpServletResponse resp) throws IOException {
         Link link = new Link(fullURL, "", 0);
         linkDao.persistWithTransaction(link);
+        link = linkDao.getByFullURL(fullURL);
         resp.getOutputStream().write((domain + "/" + link.getShortURL()).getBytes());
     }
 
