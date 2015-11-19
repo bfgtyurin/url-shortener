@@ -25,11 +25,13 @@ public class LinkController implements HttpRequestHandler {
     @Override
     public void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.handleRequest";
-        LOGGER.info(METHOD_NAME + "HTTP Method : " + req.getMethod() + ", fullLink from request = " + req.getParameter("link"));
-
-        domain = req.getServerName();
-        String fullLink = req.getParameter("link");
-        handleData(fullLink, resp);
+        final String REQUEST_METHOD = req.getMethod();
+        LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullLink from request = " + req.getParameter("link"));
+        if ("POST".equals(REQUEST_METHOD)) {
+            domain = req.getServerName();
+            String fullLink = req.getParameter("link");
+            handleData(fullLink, resp);
+        }
     }
 
     private void handleData(String fullURL, HttpServletResponse resp) throws IOException {
