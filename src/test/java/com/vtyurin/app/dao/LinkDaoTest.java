@@ -1,8 +1,7 @@
-package org.vtyurin.app.dao;
+package com.vtyurin.app.dao;
 
 import com.vtyurin.app.config.ApplicationContext;
 import com.vtyurin.app.config.Profiles;
-import com.vtyurin.app.dao.LinkDao;
 import com.vtyurin.app.model.Link;
 import org.h2.jdbcx.JdbcConnectionPool;
 import org.h2.tools.RunScript;
@@ -18,10 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.Reader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -64,56 +60,18 @@ public class LinkDaoTest {
     }
 
     @Test
-    public void persistTest() throws SQLException {
+    public void saveTest() {
         String fullURLValue = "http://site.com";
         String shortURLValue = "12345zX";
         Link link = new Link(fullURLValue, shortURLValue, 0);
-        linkDao.persistWithTransaction(link);
-
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Links WHERE fullUrl=?");
-        preparedStatement.setString(1, fullURLValue);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        assertEquals(resultSet.getFetchSize(), 0);
-        assertTrue(resultSet.next());
-        assertEquals(shortURLValue, resultSet.getString("shortUrl"));
-    }
-
-    @Test
-    public void persisWithTransactionShouldReturnExistLinkTest() {
-        String fullURL = "https://google.com";
-        Link link = new Link();
-        link.setFullURL(fullURL);
-        linkDao.persistWithTransaction(link);
-        Link from = linkDao.getByFullURL(link.getFullURL());
-        assertEquals(10, from.getClicks());
-    }
-
-    @Test
-    public void persisWithTransactionShouldReturnNewLinkTest() {
-        String fullURL = "https://zxc.com";
-        Link link = new Link();
-        link.setFullURL(fullURL);
-        linkDao.persistWithTransaction(link);
-        Link from = linkDao.getByFullURL(link.getFullURL());
-
-        assertTrue(from.getId() > 0);
-    }
-
-    @Test
-    public void persistWithTransactionShortExistTest() throws SQLException {
-        Link link = new Link("http://zxc123asd.com", "54321Sa", 0);
-        assertTrue(linkDao.shortUrlExist(connection, link.getShortURL()));
-        assertFalse(linkDao.shortUrlExist(connection, "1111111"));
-        linkDao.persistWithTransaction(link);
-        Link from = linkDao.getByFullURL(link.getFullURL());
-        assertNotEquals("1111111", link.getShortURL());
-        assertNotEquals(from.getShortURL(), link.getShortURL());
+        linkDao.save(link);
+        assertTrue(link.getId() > 0);
     }
 
     @Test
     public void getByFullURLTest() {
         String fullURL = "https://google.com";
-        Link link  = linkDao.getByFullURL(fullURL);
+        Link link = linkDao.getByFullURL(fullURL);
         assertEquals("12345aS", link.getShortURL());
         assertEquals(10, link.getClicks());
     }
