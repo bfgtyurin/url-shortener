@@ -14,8 +14,8 @@ public class AppInitializer implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         servletContext.addListener(new ContextLoaderListener(getContext()));
 
-        ServletRegistration.Dynamic ajaxTestController = servletContext.addServlet("linkController", HttpRequestHandlerServlet.class);
-        ajaxTestController.addMapping("/shorten");
+        ServletRegistration.Dynamic linkController = servletContext.addServlet("linkController", HttpRequestHandlerServlet.class);
+        linkController.addMapping("/shorten");
     }
 
     private AnnotationConfigWebApplicationContext getContext() {

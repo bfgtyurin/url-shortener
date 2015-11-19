@@ -29,6 +29,8 @@ $(function() {
 
     sendLink: function () {
       return $.ajax({
+        method: "POST",
+        dataType: "text",
         context: this,
         url: "shorten",
         data: this.shortenForm.serialize()

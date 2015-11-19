@@ -25,7 +25,7 @@ public class LinkController implements HttpRequestHandler {
     @Override
     public void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.handleRequest";
-        LOGGER.info(METHOD_NAME + ": fullLink from request = " + req.getParameter("link"));
+        LOGGER.info(METHOD_NAME + "HTTP Method : " + req.getMethod() + ", fullLink from request = " + req.getParameter("link"));
 
         domain = req.getServerName();
         String fullLink = req.getParameter("link");
