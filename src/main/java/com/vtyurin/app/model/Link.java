@@ -2,7 +2,7 @@ package com.vtyurin.app.model;
 
 public class Link {
 
-    private long id;
+    private Long id = null;
     private String fullURL;
     private String shortURL;
     private long clicks;
@@ -10,12 +10,17 @@ public class Link {
     public Link() {
     }
 
-    public Link(String fullURL, String shortURL, int clicks) {
+    public Link(String fullURL) {
         this.fullURL = fullURL;
-        this.shortURL = shortURL;
     }
 
-    public long getId() {
+    public Link(String fullURL, String shortURL, long clicks) {
+        this.fullURL = fullURL;
+        this.shortURL = shortURL;
+        this.clicks = clicks;
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -49,10 +54,10 @@ public class Link {
 
     @Override
     public String toString() {
-        return "Link{" +
-                "fullURL='" + fullURL + '\'' +
-                ", shortURL='" + shortURL + '\'' +
-                ", clicks=" + clicks +
-                '}';
+        return "Link {id: " + id +
+                ", fullURL:'" + fullURL + '\'' +
+                ", shortURL:'" + shortURL + '\'' +
+                ", clicks:" + clicks +
+                "\'}";
     }
 }

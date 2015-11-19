@@ -1,4 +1,4 @@
-package org.vtyurin.app.db;
+package com.vtyurin.app.controller;
 
 import com.vtyurin.app.config.ApplicationContext;
 import com.vtyurin.app.config.Profiles;
@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,18 +20,20 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationContext.class})
 @ActiveProfiles(Profiles.INTEGRATION_TEST)
-public class LinkDaoTest {
+public class LinkControllerIntegrationTest {
+
+    private static final int ROWS_IN_LINKS_TABLE = 2;
+    private static final int ID_AFTER_INSERT_ONE = ROWS_IN_LINKS_TABLE + 1;
+
+    @Autowired
+    LinkController linkController;
 
     @Autowired
     JdbcConnectionPool dataSource;
@@ -56,8 +59,7 @@ public class LinkDaoTest {
     private FileReader readSqlTestFile(String fileName) throws FileNotFoundException {
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource(fileName).getFile());
-        FileReader fileReader = new FileReader(file);
-        return fileReader;
+        return new FileReader(file);
     }
 
     private void loadSqlFromFile(FileReader fileReader) throws SQLException {
@@ -65,54 +67,44 @@ public class LinkDaoTest {
     }
 
     @Test
-    public void persistTest() throws SQLException {
-        String fullURLValue = "http://site.com";
-        String shortURLValue = "12345zX";
-        Link link = new Link(fullURLValue, shortURLValue, 0);
-        linkDao.persist(link);
+    public void testSaveLink() throws Exception {
+        String fullUrl = "https://zxciop.com";
+        Link link = new Link(fullUrl);
+        linkController.saveLink(link, new MockHttpServletResponse());
+        link = linkDao.getByFullURL(fullUrl);
 
-        PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM Links WHERE fullUrl=?");
-        preparedStatement.setString(1, fullURLValue);
-        ResultSet resultSet = preparedStatement.executeQuery();
-        assertEquals(resultSet.getFetchSize(), 0);
-        assertTrue(resultSet.next());
-        assertEquals(shortURLValue, resultSet.getString("shortUrl"));
+        assertNotNull(link.getId());
+        assertNotNull(link.getFullURL());
+        assertNotNull(link.getShortURL());
     }
 
     @Test
-    public void getByFullURLTest() {
+    public void testSaveLinkShouldNotSave() throws Exception {
         String fullURL = "https://google.com";
-        Link link  = linkDao.getByFullURL(fullURL);
-        assertEquals("12345aS", link.getShortURL());
-        assertEquals(10, link.getClicks());
-    }
+        Link link = new Link(fullURL);
+        linkController.saveLink(link, new MockHttpServletResponse());
+        link = linkDao.getById(ID_AFTER_INSERT_ONE);
 
-    @Test
-    public void getByShortURLTest() {
-        String shortURL = "12345aS";
-        Link link = linkDao.getByShortUrl(shortURL);
-        assertEquals("https://google.com", link.getFullURL());
-    }
-
-    @Test
-    public void getByShortUrlWithNotExistValue() {
-        String shortURL = "mmmmmmm";
-        Link link = linkDao.getByShortUrl(shortURL);
+        assertNull(link.getId());
+        assertEquals(0, link.getClicks());
         assertNull(link.getFullURL());
         assertNull(link.getShortURL());
     }
 
     @Test
-    public void updateTest() {
+    public void testSaveLinkShouldReturnExisting() throws Exception {
         String fullURL = "https://google.com";
-        Link link = linkDao.getByFullURL(fullURL);
-        long clicks = link.getClicks();
-        link.setId(1);
-        link.setClicks(clicks + 1);
-        linkDao.update(link);
-        link = linkDao.getByFullURL(fullURL);
+        Link link = new Link(fullURL);
+        linkController.saveLink(link, new MockHttpServletResponse());
 
-        assertEquals(clicks + 1, link.getClicks());
+        assertNotNull(link.getId());
+        assertNotNull(link.getFullURL());
+        assertNotNull(link.getShortURL());
     }
 
+    @Test
+    public void testShortUrlInvalid() {
+        String shortURL = "12345aS";
+        assertTrue(linkController.shortUrlInvalid(shortURL));
+    }
 }

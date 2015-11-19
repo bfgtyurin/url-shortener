@@ -19,7 +19,7 @@ public class ConnectionUtil {
 
     /**
      * Creates a <code>JdbcConnectionPool</code> object
-     * based on @Autowired<code>Environment</code> variable.
+     * Get properties from @Autowired <code>Environment</code> variable.
      * Then initialize <code>JdbcConnectionPool</code> with these properties.
      *
      * @return a new <code>Connection</code> object from <code>JdbcConnectionPool</code>
