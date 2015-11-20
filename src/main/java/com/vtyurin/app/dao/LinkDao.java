@@ -117,6 +117,7 @@ public class LinkDao {
             link.setShortURL(resultSet.getString("shortURL"));
         }
 
+        LOGGER.info("initializeLink return = " + link);
         return link;
     }
 

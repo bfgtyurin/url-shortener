@@ -16,10 +16,14 @@ $(function() {
 
     bindEvents: function() {
       this.shortenButton.on('click', this.shortenButtonHandler.bind(this));
-      this.shortenForm.on('input', this.shortenFormHandler.bind(this));
+      this.shortenForm.on('input', this.shortenFormInputHandler.bind(this));
     },
 
-    shortenFormHandler: function() {
+    shortenFormInputHandler: function() {
+      this.initShortenButton();
+    },
+
+    initShortenButton: function() {
       this.shortenButton.removeClass('copy-button').addClass('shorten-button');
       this.shortenButton.text('SHORTEN');
     },
@@ -28,21 +32,35 @@ $(function() {
       event.preventDefault();
 
       if (this.shortenButton.hasClass('shorten-button')) {
-      this.shortenButton.removeClass('shorten-button').addClass('copy-button');
-      this.shortenButton.text('COPY');
-        var promise = this.sendLink();
-        promise.done(function(data) {
-          this.shortenForm.val(data).select();
-        });
+
+        var formData = this.shortenForm.serialize();
+        if (this.isValidForm(formData)) {
+          this.shortenButton.removeClass('shorten-button').addClass('copy-button');
+          this.shortenButton.text('COPY');
+          var promise = this.sendLink(formData);
+          promise.done(function(data) {
+            var parsed = JSON.parse(data);
+            var shortUrlWithDomain = window.location.host + '/' + parsed.shortURL;
+            this.shortenForm.val(shortUrlWithDomain).select();
+
+          });
+        }
+
       }
     },
 
-    sendLink: function () {
+    isValidForm: function(formData) {
+      console.log('formData = ' + formData);
+      // TO DO
+      return formData.substring(5).length > 0;
+    },
+
+    sendLink: function (formData) {
       return $.ajax({
         method: "POST",
         context: this,
         url: "shorten",
-        data: this.shortenForm.serialize()
+        data: formData
       });
     }
 
