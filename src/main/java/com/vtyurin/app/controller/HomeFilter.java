@@ -25,7 +25,6 @@ public class HomeFilter extends DelegatingFilterProxy {
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        LOGGER.info("in HomeFilter");
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String URI = httpRequest.getRequestURI().substring(1);
@@ -55,6 +54,6 @@ public class HomeFilter extends DelegatingFilterProxy {
 
     boolean isValidUrl(String URI) {
         String pattern = "^[a-zA-Z0-9]*$";
-        return !(URI.length() != 7 || !URI.matches(pattern));
+        return !(URI.equals("shorten") || URI.length() != 7 || !URI.matches(pattern));
     }
 }

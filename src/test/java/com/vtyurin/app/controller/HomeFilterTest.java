@@ -20,5 +20,7 @@ public class HomeFilterTest {
         assertFalse(homeFilter.isValidUrl("*()_+{}"));
         assertFalse(homeFilter.isValidUrl("123456"));
         assertFalse(homeFilter.isValidUrl("12345678"));
+
+        assertFalse(homeFilter.isValidUrl("shorten"));
     }
 }

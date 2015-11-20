@@ -79,27 +79,33 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>1.10.19</version>
+            <version>${mockito-core.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.hsqldb</groupId>
-            <artifactId>hsqldb</artifactId>
-            <version>2.3.3</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
             <scope>test</scope>
         </dependency>
 
         <!-- DB -->
         <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>1.4.185</version>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.1.1</version>
         </dependency>
 
+        <!-- Logging -->
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <version>${log4j.version}</version>
         </dependency>
 
     </dependencies>
@@ -158,9 +164,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
         <spring.version>4.2.2.RELEASE</spring.version>
+        <postgresql.version>9.4-1204-jdbc41</postgresql.version>
+        <commons-dbcp2.version>2.1.1</commons-dbcp2.version>
         <tomcat.version>8.0.28</tomcat.version>
         <servlet-api.version>3.1.0</servlet-api.version>
         <junit.version>4.12</junit.version>
+        <mockito-core.version>1.10.19</mockito-core.version>
+        <h2.version>1.4.185</h2.version>
+        <log4j.version>1.2.17</log4j.version>
     </properties>
 
 </project>
