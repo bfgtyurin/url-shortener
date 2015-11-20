@@ -15,7 +15,16 @@ public class Main {
         String webappDirLocation = "static/";
 
         Tomcat tomcat = new Tomcat();
-        tomcat.setPort(8080);
+
+        //Heroku
+        //The port that we should run on can be set into an environment variable
+        //Look for that variable and default to 8080 if it isn't there.
+        String webPort = System.getenv("PORT");
+        if(webPort == null || webPort.isEmpty()) {
+            webPort = "8080";
+        }
+
+        tomcat.setPort(Integer.parseInt(webPort));
         StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         ctx.addWelcomeFile("index.html");
         // declare an alternative location for your "WEB-INF/classes" dir
