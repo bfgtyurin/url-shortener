@@ -4,7 +4,7 @@ import com.vtyurin.app.config.ApplicationContext;
 import com.vtyurin.app.config.Profiles;
 import com.vtyurin.app.dao.LinkDao;
 import com.vtyurin.app.model.Link;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
@@ -38,7 +38,7 @@ public class LinkControllerIntegrationTest {
     LinkController linkController;
 
     @Autowired
-    JdbcConnectionPool dataSource;
+    BasicDataSource dataSource;
 
     @Autowired
     LinkDao linkDao;
@@ -56,6 +56,7 @@ public class LinkControllerIntegrationTest {
     public void tearDown() throws FileNotFoundException, SQLException {
         FileReader fileReader = readSqlTestFile("sql/drop-db-test.sql");
         loadSqlFromFile(fileReader);
+        connection.close();
     }
 
     private FileReader readSqlTestFile(String fileName) throws FileNotFoundException {
