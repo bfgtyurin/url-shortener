@@ -4,7 +4,7 @@ import com.vtyurin.app.config.ApplicationContext;
 import com.vtyurin.app.config.Profiles;
 import com.vtyurin.app.dao.LinkDao;
 import com.vtyurin.app.model.Link;
-import org.h2.jdbcx.JdbcConnectionPool;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.h2.tools.RunScript;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +15,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -26,6 +27,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationContext.class})
+@WebAppConfiguration
 @ActiveProfiles(Profiles.INTEGRATION_TEST)
 public class LinkControllerIntegrationTest {
 
@@ -36,7 +38,7 @@ public class LinkControllerIntegrationTest {
     LinkController linkController;
 
     @Autowired
-    JdbcConnectionPool dataSource;
+    BasicDataSource dataSource;
 
     @Autowired
     LinkDao linkDao;
@@ -54,6 +56,7 @@ public class LinkControllerIntegrationTest {
     public void tearDown() throws FileNotFoundException, SQLException {
         FileReader fileReader = readSqlTestFile("sql/drop-db-test.sql");
         loadSqlFromFile(fileReader);
+        connection.close();
     }
 
     private FileReader readSqlTestFile(String fileName) throws FileNotFoundException {

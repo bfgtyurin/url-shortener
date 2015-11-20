@@ -1,8 +1,8 @@
 package com.vtyurin.app.dao;
 
 import com.vtyurin.app.model.Link;
+import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
-import org.h2.jdbcx.JdbcConnectionPool;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.sql.Connection;
@@ -21,7 +21,7 @@ public class LinkDao {
     private static final String SELECT_BY_SHORT_URL_STATEMENT = "SELECT * FROM Links WHERE shortURL=?";
 
     @Autowired
-    private JdbcConnectionPool dataSource;
+    private BasicDataSource dataSource;
 
     public LinkDao() {
     }
@@ -97,8 +97,9 @@ public class LinkDao {
     public void update(Link link) {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(UPDATE_STATEMENT)) {
-                pst.setLong(1, link.getClicks());
-                pst.setLong(2, link.getId());
+                int idx = 1;
+                pst.setLong(idx++, link.getClicks());
+                pst.setLong(idx, link.getId());
                 pst.execute();
                 LOGGER.info(link + " updated");
             }
