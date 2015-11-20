@@ -97,8 +97,9 @@ public class LinkDao {
     public void update(Link link) {
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(UPDATE_STATEMENT)) {
-                pst.setLong(1, link.getClicks());
-                pst.setLong(2, link.getId());
+                int idx = 1;
+                pst.setLong(idx++, link.getClicks());
+                pst.setLong(idx, link.getId());
                 pst.execute();
                 LOGGER.info(link + " updated");
             }
