@@ -1,1 +1,15 @@
-@CHARSET "UTF-8";
+.vertical-center {
+  min-height: 100%;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
+h3 {
+  font-weight: normal;
+}
+
+.page-title {
+  color: #a3aaae;
+
+}

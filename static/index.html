@@ -1,27 +1,39 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>URL-shortener</title>
 	<link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css">
 	<link rel="stylesheet" href="/assets/styles/main.css">
 </head>
 <body>
+
 	<div class="container">
-    <div class="row">
-      <div class="col-md-3"></div>
-      <div class="col-md-6">
-        <form class="form-inline">
-          <div class="form-group col-md-10">
-            <input class="form-control" name="link" type="text" id="shortenForm" placeholder="Place a link to shorten it">
-          </div>
-          <button class="btn btn-default" type="submit" id="shortenButton">SHORTEN</button>
-        </form>
+    <div class="row vertical-center">
+      <div class="col-md-3">
       </div>
-      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <div class="page-title text-center"><h3>Nebz Link Shortener</h3></div>
+        <div class="form-container">
+          <form class="form">
+            <div class="input-group">
+              <input class="form-control input-lg" name="link" type="text" id="shortenForm" placeholder="Place a link to shorten it">
+            <span class="input-group-btn">
+               <button class="btn btn-primary btn-lg" type="submit" id="shortenButton">SHORTEN</button>
+            </span>
+            </div>
+          </form>
+        </div>
+
+      </div>
+      <div class="col-md-3">
+      </div>
     </div>
 	</div>
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/zeroclipboard/dist/ZeroClipboard.js"></script>
+  <script src="/scripts/app/app.js"></script>
 </body>
-<script src="/bower_components/jquery/dist/jquery.js"></script>
-<script src="/scripts/app/app.js"></script>
 </html>

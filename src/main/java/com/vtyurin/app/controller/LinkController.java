@@ -1,5 +1,6 @@
 package com.vtyurin.app.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.vtyurin.app.dao.LinkDao;
 import com.vtyurin.app.model.Link;
 import com.vtyurin.app.util.SequenceGenerator;
@@ -54,11 +55,15 @@ public class LinkController implements HttpRequestHandler {
             do {
                 shortUrl = SequenceGenerator.generate();
             } while (shortUrlInvalid(shortUrl));
-            existing = new Link(link.getFullURL(), shortUrl, 0);
-            linkDao.save(existing);
+            link.setShortURL(shortUrl);
+            link.setClicks(0);
+            linkDao.save(link);
         }
 
-        resp.getOutputStream().write((domain + "/" + existing.getShortURL()).getBytes());
+        LOGGER.info("Returning link to user = " + link);
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(resp.getOutputStream(), link);
+        resp.setContentType("application/json");
     }
 
     void initByExistingLink(Link link, Link existing) {
@@ -66,8 +71,6 @@ public class LinkController implements HttpRequestHandler {
         link.setClicks(existing.getClicks());
         link.setFullURL(existing.getFullURL());
         link.setShortURL(existing.getShortURL());
-
-        LOGGER.info("Returning existing link = " + link);
     }
 
     boolean shortUrlInvalid(String shortUrl) {
@@ -78,6 +81,4 @@ public class LinkController implements HttpRequestHandler {
     private void sendWarningResponse(HttpServletResponse resp) throws IOException {
         resp.getOutputStream().write("This is not a valid URL".getBytes());
     }
-
-
 }
