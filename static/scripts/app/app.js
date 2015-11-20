@@ -7,30 +7,34 @@ $(function() {
       this.cacheElements();
       this.bindEvents();
 
-      this.isShortURL(window.location.href);
     },
 
     cacheElements: function() {
       this.shortenForm = $("#shortenForm");
-      this.shortenButton = $("#shortenButton");
+      this.shortenButton = $("#shortenButton").addClass('shorten-button');
     },
 
     bindEvents: function() {
       this.shortenButton.on('click', this.shortenButtonHandler.bind(this));
+      this.shortenForm.on('input', this.shortenFormHandler.bind(this));
     },
 
-    isShortURL: function(url) {
-      console.log(url);
+    shortenFormHandler: function() {
+      this.shortenButton.removeClass('copy-button').addClass('shorten-button');
+      this.shortenButton.text('SHORTEN');
     },
 
     shortenButtonHandler: function(event) {
       event.preventDefault();
 
-      var promise = this.sendLink();
-      promise.done(function(data) {
-        this.shortenForm.val(data).select();
-        this.shortenButton.text('COPY');
-      });
+      if (this.shortenButton.hasClass('shorten-button')) {
+      this.shortenButton.removeClass('shorten-button').addClass('copy-button');
+      this.shortenButton.text('COPY');
+        var promise = this.sendLink();
+        promise.done(function(data) {
+          this.shortenForm.val(data).select();
+        });
+      }
     },
 
     sendLink: function () {
