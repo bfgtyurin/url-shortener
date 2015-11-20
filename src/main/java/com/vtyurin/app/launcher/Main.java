@@ -12,12 +12,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-        String webappDirLocation = "src/main/webapp/";
+        String webappDirLocation = "static/";
 
         Tomcat tomcat = new Tomcat();
         tomcat.setPort(8080);
         StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
-
+        ctx.addWelcomeFile("index.html");
         // declare an alternative location for your "WEB-INF/classes" dir
         File additionWebInfClasses = new File("target/classes");
         WebResourceRoot resources = new StandardRoot(ctx);

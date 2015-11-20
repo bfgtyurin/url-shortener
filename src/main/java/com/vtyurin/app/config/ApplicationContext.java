@@ -1,5 +1,6 @@
 package com.vtyurin.app.config;
 
+import com.vtyurin.app.controller.HomeFilter;
 import com.vtyurin.app.controller.LinkController;
 import com.vtyurin.app.dao.LinkDao;
 import org.springframework.context.annotation.*;
@@ -21,13 +22,18 @@ public class ApplicationContext {
     }
 
     @Bean
-    LinkController linkController() {
-        return new LinkController();
-    }
-
-    @Bean
     LinkDao linkDao() {
         return new LinkDao();
     }
 
+    @Bean
+    HomeFilter homeFilter() {
+        return new HomeFilter();
+    }
+
+    @Bean
+    LinkController linkController() {
+        return new LinkController();
+    }
 }
+

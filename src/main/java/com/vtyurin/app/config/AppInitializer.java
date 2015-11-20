@@ -4,15 +4,18 @@ import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.HttpRequestHandlerServlet;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
+import javax.servlet.*;
+import java.util.EnumSet;
 
 public class AppInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         servletContext.addListener(new ContextLoaderListener(getContext()));
+
+        FilterRegistration.Dynamic homeFilter = servletContext.addFilter("homeFilter", DelegatingFilterProxy.class);
+        homeFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, "/*");
 
         ServletRegistration.Dynamic linkController = servletContext.addServlet("linkController", HttpRequestHandlerServlet.class);
         linkController.addMapping("/shorten");
