@@ -18,8 +18,6 @@ import java.util.Objects;
 public class LinkController implements HttpRequestHandler {
     private final static Logger LOGGER = Logger.getLogger(LinkController.class);
 
-    private String domain;
-
     @Autowired
     private LinkDao linkDao;
 
@@ -28,49 +26,57 @@ public class LinkController implements HttpRequestHandler {
         final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.handleRequest";
         final String REQUEST_METHOD = req.getMethod();
         LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullLink from request = " + req.getParameter("link"));
+
         if ("POST".equals(REQUEST_METHOD)) {
-            domain = req.getServerName();
             String fullLink = req.getParameter("link");
-            handleData(fullLink, resp);
+            handlePostRequest(fullLink, resp);
         }
     }
 
-    private void handleData(String fullURL, HttpServletResponse resp) throws IOException {
+    void handlePostRequest(String fullURL, HttpServletResponse resp) {
         if (URL.isValid(fullURL)) {
-            Link link = new Link();
-            link.setFullURL(fullURL);
-            saveLink(link, resp);
+            Link link = getExistingLinkObjectOrCreateNew(fullURL);
+            sendLinkResponse(link, resp);
         } else {
             sendWarningResponse(resp);
             LOGGER.info("Link from user is invalid");
         }
     }
 
-    void saveLink(Link link, HttpServletResponse resp) throws IOException {
-        Link existing = linkDao.getByFullURL(link.getFullURL());
-        if (Objects.nonNull(existing.getId())) {
-            initByExistingLink(link, existing);
-        } else {
-            String shortUrl;
-            do {
-                shortUrl = SequenceGenerator.generate();
-            } while (shortUrlInvalid(shortUrl));
-            link.setShortURL(shortUrl);
-            link.setClicks(0);
-            linkDao.save(link);
+    Link getExistingLinkObjectOrCreateNew(String fullURL) {
+        Link link = linkDao.getByFullURL(fullURL);
+        if (Objects.isNull(link.getId())) {
+            link = createNewLinkObjectWithUrl(fullURL);
         }
 
-        LOGGER.info("Returning link to user = " + link);
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(resp.getOutputStream(), link);
-        resp.setContentType("application/json");
+        return link;
     }
 
-    void initByExistingLink(Link link, Link existing) {
-        link.setId(existing.getId());
-        link.setClicks(existing.getClicks());
-        link.setFullURL(existing.getFullURL());
-        link.setShortURL(existing.getShortURL());
+    Link createNewLinkObjectWithUrl(String fullURL) {
+        String shortUrl;
+        do {
+            shortUrl = SequenceGenerator.generate();
+        } while (shortUrlInvalid(shortUrl));
+        Link link = new Link(fullURL, shortUrl, 0);
+        linkDao.save(link);
+        LOGGER.info("New Link created = " + link);
+
+        return link;
+    }
+
+    void sendLinkResponse(Link link, HttpServletResponse resp) {
+        try {
+            sendLinkJsonResponse(link, resp);
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    void sendLinkJsonResponse(Link link, HttpServletResponse resp) throws IOException {
+        LOGGER.info("Returning link to user = " + link);
+        ObjectMapper mapper = new ObjectMapper();
+        resp.setContentType("application/json");
+        mapper.writeValue(resp.getOutputStream(), link);
     }
 
     boolean shortUrlInvalid(String shortUrl) {
@@ -78,7 +84,12 @@ public class LinkController implements HttpRequestHandler {
         return Objects.nonNull(link.getId());
     }
 
-    private void sendWarningResponse(HttpServletResponse resp) throws IOException {
-        resp.getOutputStream().write("This is not a valid URL".getBytes());
+    private void sendWarningResponse(HttpServletResponse resp) {
+        try {
+            resp.setContentType("application/json");
+            resp.sendError(400, "This is not a valid URL");
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
     }
 }

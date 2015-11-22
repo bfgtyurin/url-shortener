@@ -31,19 +31,19 @@ var App = {
   shortenButtonHandler: function(event) {
     event.preventDefault();
 
-    var formData = App.shortenForm.serialize();
+    var formData = App.shortenForm.val();
     if (App.isValidForm(formData)) {
-      var promise = App.sendLink(formData);
+      var serializedFormData = App.shortenForm.serialize();
+      var promise = App.ajaxPostRequest(serializedFormData);
       promise.done(function(data) {
-        var parsed = JSON.parse(data);
-        var shortUrlWithDomain = window.location.origin + '/' + parsed.shortURL;
+        var shortUrlWithDomain = window.location.origin + '/' + data.shortURL;
         App.shortenForm.val(shortUrlWithDomain).select();
-
       });
+
+      App.shortenButton.hide();
+      App.copyButton.show();
     }
 
-    App.shortenButton.hide();
-    App.copyButton.show();
   },
 
   copyButtonHandler: function(event) {
@@ -52,11 +52,11 @@ var App = {
 
   isValidForm: function(formData) {
     console.log('formData = ' + formData);
-    // TO DO
-    return formData.substring(5).length > 0;
+    var urlRegEx = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-]*)?\??(?:[\-\+=&;%@\.\w]*)#?(?:[\.\!\/\\\w]*))?)/g;
+    return urlRegEx.test(formData);
   },
 
-  sendLink: function (formData) {
+  ajaxPostRequest: function (formData) {
     return $.ajax({
       method: "POST",
       context: App,

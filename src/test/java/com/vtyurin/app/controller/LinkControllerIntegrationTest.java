@@ -72,9 +72,8 @@ public class LinkControllerIntegrationTest {
     @Test
     public void testSaveLink() throws Exception {
         String fullUrl = "https://zxciop.com";
-        Link link = new Link(fullUrl);
-        linkController.saveLink(link, new MockHttpServletResponse());
-        link = linkDao.getByFullURL(fullUrl);
+        linkController.handlePostRequest(fullUrl, new MockHttpServletResponse());
+        Link link = linkDao.getByFullURL(fullUrl);
 
         assertNotNull(link.getId());
         assertNotNull(link.getFullURL());
@@ -84,9 +83,8 @@ public class LinkControllerIntegrationTest {
     @Test
     public void testSaveLinkShouldNotSave() throws Exception {
         String fullURL = "https://google.com";
-        Link link = new Link(fullURL);
-        linkController.saveLink(link, new MockHttpServletResponse());
-        link = linkDao.getById(ID_AFTER_INSERT_ONE);
+        linkController.handlePostRequest(fullURL, new MockHttpServletResponse());
+        Link link = linkDao.getById(ID_AFTER_INSERT_ONE);
 
         assertNull(link.getId());
         assertEquals(0, link.getClicks());
@@ -94,20 +92,4 @@ public class LinkControllerIntegrationTest {
         assertNull(link.getShortURL());
     }
 
-    @Test
-    public void testSaveLinkShouldReturnExisting() throws Exception {
-        String fullURL = "https://google.com";
-        Link link = new Link(fullURL);
-        linkController.saveLink(link, new MockHttpServletResponse());
-
-        assertNotNull(link.getId());
-        assertNotNull(link.getFullURL());
-        assertNotNull(link.getShortURL());
-    }
-
-    @Test
-    public void testShortUrlInvalid() {
-        String shortURL = "12345aS";
-        assertTrue(linkController.shortUrlInvalid(shortURL));
-    }
 }

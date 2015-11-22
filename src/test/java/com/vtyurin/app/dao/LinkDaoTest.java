@@ -21,8 +21,7 @@ import java.io.FileReader;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ApplicationContext.class})
@@ -30,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 @ActiveProfiles(Profiles.INTEGRATION_TEST)
 public class LinkDaoTest {
 
+    public static final int DEFAULT_CLICKS_AMOUNT = 10;
     @Autowired
     BasicDataSource dataSource;
 
@@ -69,15 +69,15 @@ public class LinkDaoTest {
         String shortURLValue = "12345zX";
         Link link = new Link(fullURLValue, shortURLValue, 0);
         linkDao.save(link);
-        assertTrue(link.getId() > 0);
+        assertNotNull(link.getId());
     }
 
     @Test
     public void getByFullURLTest() {
         String fullURL = "https://google.com";
         Link link = linkDao.getByFullURL(fullURL);
-        assertEquals("12345aS", link.getShortURL());
-        assertEquals(10, link.getClicks());
+        assertEquals("shorURL's should be equals", "12345aS", link.getShortURL());
+        assertEquals("clicks should be equals", DEFAULT_CLICKS_AMOUNT, link.getClicks());
     }
 
     @Test
@@ -87,13 +87,13 @@ public class LinkDaoTest {
         assertEquals("https://google.com", link.getFullURL());
     }
 
-//    @Test
-//    public void getByShortUrlWithNotExistValue() {
-//        String shortURL = "mmmmmmm";
-//        Link link = linkDao.getByShortUrl(shortURL);
-//        assertNull(link.getFullURL());
-//        assertNull(link.getShortURL());
-//    }
+    @Test
+    public void getByShortUrlWithNotExistValue() {
+        String shortURL = "mmmmmmm";
+        Link link = linkDao.getByShortUrl(shortURL);
+        assertNull(link.getFullURL());
+        assertNull(link.getShortURL());
+    }
 
     @Test
     public void updateTest() {
@@ -105,7 +105,7 @@ public class LinkDaoTest {
         linkDao.update(link);
         link = linkDao.getByFullURL(fullURL);
 
-        assertEquals(clicks + 1, link.getClicks());
+        assertEquals("clicks + 1 should be equals", clicks + 1, link.getClicks());
     }
 
 }
