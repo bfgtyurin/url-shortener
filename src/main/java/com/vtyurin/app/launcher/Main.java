@@ -27,7 +27,7 @@ public class Main {
         tomcat.setPort(Integer.parseInt(webPort));
         StandardContext ctx = (StandardContext) tomcat.addWebapp("/", new File(webappDirLocation).getAbsolutePath());
         ctx.addWelcomeFile("index.html");
-        // declare an alternative location for your "WEB-INF/classes" dir
+        // declare an alternative location for "WEB-INF/classes" dir
         File additionWebInfClasses = new File("target/classes");
         WebResourceRoot resources = new StandardRoot(ctx);
         resources.addPreResources(new DirResourceSet(resources, "/WEB-INF/classes",
