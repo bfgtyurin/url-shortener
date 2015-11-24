@@ -15,6 +15,11 @@ public class Link {
     }
 
     public Link(String fullURL, String shortURL, long clicks) {
+
+        if (clicks < 0) {
+            throw new IllegalArgumentException("illegal number of clicks: [" + clicks + "]");
+        }
+
         this.fullURL = fullURL;
         this.shortURL = shortURL;
         this.clicks = clicks;

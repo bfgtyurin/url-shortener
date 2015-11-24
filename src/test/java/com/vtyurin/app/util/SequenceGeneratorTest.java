@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 public class SequenceGeneratorTest {
 
     @Test
-    public void testGenerate() throws Exception {
+    public void generate() throws Exception {
         String generatedStirng = SequenceGenerator.generate();
         assertEquals(7, generatedStirng.length());
     }

@@ -1,3 +1,5 @@
+You can check deployed app on heroku [https://nebz.herokuapp.com](https://nebz.herokuapp.com)
+
 ##### Prerequisites
 * JDK 8 or later
 * Maven 3.0+
@@ -16,7 +18,7 @@ mvn package
 
 #### Prepare database
 Install PostgreSQL.
-Create database and create Links table:
+Create database and create links table:
 
 ```
 CREATE TABLE links (id SERIAL PRIMARY KEY NOT NULL, clicks INTEGER, fullURL VARCHAR(555), shortURL VARCHAR(10));

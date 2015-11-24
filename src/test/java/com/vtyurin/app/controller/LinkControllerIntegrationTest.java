@@ -20,6 +20,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -43,20 +44,24 @@ public class LinkControllerIntegrationTest {
     @Autowired
     LinkDao linkDao;
 
-    Connection connection;
-
     @Before
-    public void setUp() throws SQLException, FileNotFoundException {
-        connection = dataSource.getConnection();
-        FileReader fileReader = readSqlTestFile("sql/create-db-test.sql");
-        loadSqlFromFile(fileReader);
+    public void setUp() {
+        try (Connection connection = dataSource.getConnection();
+             FileReader fileReader = readSqlTestFile("sql/create-db-test.sql")) {
+            RunScript.execute(connection, fileReader);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
     public void tearDown() throws FileNotFoundException, SQLException {
-        FileReader fileReader = readSqlTestFile("sql/drop-db-test.sql");
-        loadSqlFromFile(fileReader);
-        connection.close();
+        try (Connection connection = dataSource.getConnection();
+             FileReader fileReader = readSqlTestFile("sql/drop-db-test.sql")) {
+            RunScript.execute(connection, fileReader);
+        } catch (IOException | SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private FileReader readSqlTestFile(String fileName) throws FileNotFoundException {
@@ -65,12 +70,8 @@ public class LinkControllerIntegrationTest {
         return new FileReader(file);
     }
 
-    private void loadSqlFromFile(FileReader fileReader) throws SQLException {
-        RunScript.execute(connection, fileReader);
-    }
-
     @Test
-    public void testSaveLink() throws Exception {
+    public void saveLinkShouldSave() throws Exception {
         String fullUrl = "https://zxciop.com";
         linkController.handlePostRequest(fullUrl, new MockHttpServletResponse());
         Link link = linkDao.getByFullURL(fullUrl);
@@ -81,7 +82,7 @@ public class LinkControllerIntegrationTest {
     }
 
     @Test
-    public void testSaveLinkShouldNotSave() throws Exception {
+    public void saveLinkShouldNotSave() throws Exception {
         String fullURL = "https://google.com";
         linkController.handlePostRequest(fullURL, new MockHttpServletResponse());
         Link link = linkDao.getById(ID_AFTER_INSERT_ONE);
