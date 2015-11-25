@@ -76,7 +76,7 @@ public class LinkDaoTest {
     public void getByFullURLTest() {
         String fullURL = "https://google.com";
         Link link = linkDao.getByFullURL(fullURL);
-        assertEquals("shorURL's should be equals", "12345aS", link.getShortURL());
+        assertEquals("shorURL's should be equals", "12345aS", link.getShortUrl());
         assertEquals("clicks should be equals", DEFAULT_CLICKS_AMOUNT, link.getClicks());
     }
 
@@ -84,15 +84,15 @@ public class LinkDaoTest {
     public void getByShortURLTest() {
         String shortURL = "12345aS";
         Link link = linkDao.getByShortUrl(shortURL);
-        assertEquals("https://google.com", link.getFullURL());
+        assertEquals("https://google.com", link.getFullUrl());
     }
 
     @Test
     public void getByShortUrlWithNotExistValue() {
         String shortURL = "mmmmmmm";
         Link link = linkDao.getByShortUrl(shortURL);
-        assertNull(link.getFullURL());
-        assertNull(link.getShortURL());
+        assertNull(link.getFullUrl());
+        assertNull(link.getShortUrl());
     }
 
     @Test

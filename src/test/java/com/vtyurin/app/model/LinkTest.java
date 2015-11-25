@@ -17,14 +17,14 @@ public class LinkTest {
     @Test
     public void constructorShouldBeSetFullUrl() {
         Link link = new Link("https://google.com");
-        assertEquals("https://google.com", link.getFullURL());
+        assertEquals("https://google.com", link.getFullUrl());
     }
 
     @Test
     public void constructorShouldBeSetFullUrlShorUrlClicks() {
         Link link = new Link("https://google.com", "123ZXCv", 42);
-        assertEquals("https://google.com", link.getFullURL());
-        assertEquals("123ZXCv", link.getShortURL());
+        assertEquals("https://google.com", link.getFullUrl());
+        assertEquals("123ZXCv", link.getShortUrl());
         assertEquals(42, link.getClicks());
     }
 

@@ -3,25 +3,25 @@ package com.vtyurin.app.model;
 public class Link {
 
     private Long id = null;
-    private String fullURL;
-    private String shortURL;
+    private String fullUrl;
+    private String shortUrl;
     private long clicks;
 
     public Link() {
     }
 
-    public Link(String fullURL) {
-        this.fullURL = fullURL;
+    public Link(String fullUrl) {
+        this.fullUrl = fullUrl;
     }
 
-    public Link(String fullURL, String shortURL, long clicks) {
+    public Link(String fullUrl, String shortUrl, long clicks) {
 
         if (clicks < 0) {
             throw new IllegalArgumentException("illegal number of clicks: [" + clicks + "]");
         }
 
-        this.fullURL = fullURL;
-        this.shortURL = shortURL;
+        this.fullUrl = fullUrl;
+        this.shortUrl = shortUrl;
         this.clicks = clicks;
     }
 
@@ -33,20 +33,20 @@ public class Link {
         this.id = id;
     }
 
-    public String getFullURL() {
-        return fullURL;
+    public String getFullUrl() {
+        return fullUrl;
     }
 
-    public void setFullURL(String fullURL) {
-        this.fullURL = fullURL;
+    public void setFullUrl(String fullUrl) {
+        this.fullUrl = fullUrl;
     }
 
-    public String getShortURL() {
-        return shortURL;
+    public String getShortUrl() {
+        return shortUrl;
     }
 
-    public void setShortURL(String shortURL) {
-        this.shortURL = shortURL;
+    public void setShortUrl(String shortUrl) {
+        this.shortUrl = shortUrl;
     }
 
     public long getClicks() {
@@ -60,8 +60,8 @@ public class Link {
     @Override
     public String toString() {
         return "Link {id: " + id +
-                ", fullURL:'" + fullURL + '\'' +
-                ", shortURL:'" + shortURL + '\'' +
+                ", fullUrl:'" + fullUrl + '\'' +
+                ", shortUrl:'" + shortUrl + '\'' +
                 ", clicks:" + clicks +
                 "\'}";
     }

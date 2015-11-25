@@ -39,8 +39,8 @@ public class HomeFilter extends DelegatingFilterProxy {
 
             if (Objects.nonNull(existing.getId())) {
 
-                LOGGER.info("Redirecting to " + existing.getFullURL());
-                httpResponse.sendRedirect(existing.getFullURL());
+                LOGGER.info("Redirecting to " + existing.getFullUrl());
+                httpResponse.sendRedirect(existing.getFullUrl());
 
                 existing.setClicks(existing.getClicks() + 1);
                 linkDao.update(existing);

@@ -77,8 +77,8 @@ public class LinkControllerIntegrationTest {
         Link link = linkDao.getByFullURL(fullUrl);
 
         assertNotNull(link.getId());
-        assertNotNull(link.getFullURL());
-        assertNotNull(link.getShortURL());
+        assertNotNull(link.getFullUrl());
+        assertNotNull(link.getShortUrl());
     }
 
     @Test
@@ -89,8 +89,8 @@ public class LinkControllerIntegrationTest {
 
         assertNull(link.getId());
         assertEquals(0, link.getClicks());
-        assertNull(link.getFullURL());
-        assertNull(link.getShortURL());
+        assertNull(link.getFullUrl());
+        assertNull(link.getShortUrl());
     }
 
 }

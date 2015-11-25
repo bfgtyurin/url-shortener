@@ -31,8 +31,8 @@ public class LinkDao {
             try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_STATEMENT)) {
                 int idx = 1;
                 preparedStatement.setLong(idx++, link.getClicks());
-                preparedStatement.setString(idx++, link.getFullURL());
-                preparedStatement.setString(idx, link.getShortURL());
+                preparedStatement.setString(idx++, link.getFullUrl());
+                preparedStatement.setString(idx, link.getShortUrl());
                 preparedStatement.execute();
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -113,8 +113,8 @@ public class LinkDao {
         if (resultSet.next()) {
             link.setId(resultSet.getInt("id"));
             link.setClicks(resultSet.getInt("clicks"));
-            link.setFullURL(resultSet.getString("fullURL"));
-            link.setShortURL(resultSet.getString("shortURL"));
+            link.setFullUrl(resultSet.getString("fullURL"));
+            link.setShortUrl(resultSet.getString("shortURL"));
         }
 
         LOGGER.info("Initialized Link return = " + link);

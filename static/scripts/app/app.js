@@ -23,6 +23,15 @@ var App = {
     App.shortenForm = $("#shortenForm");
     App.shortenButton = $("#shortenButton");
     App.copyButton = $("#copyButton");
+
+    App.recentLinkListContainer = $('#recentLinkListContainer');
+    App.recentLinkList = $("#recentLinkList");
+    App.recentLinkListshortUrl = $('#recentLinkList a.shortUrl');
+    App.recentLinkListfullUrl = $('#recentLinkList a.fullUrl');
+    App.recentLinkListClicksAmount = $('#recentLinkList a.clicksAmount');
+    App.recentLinkListSmallCopyButton = $('#recentLinkList #smallCopyButton ');
+
+    App.existingLinksList = $("#existingLinksList");
     App.client = new ZeroClipboard(App.copyButton);
   },
 
@@ -48,8 +57,8 @@ var App = {
       var promise = App.ajaxPostRequest(serializedFormData);
       promise.done(function(data) {
         App.updateCookie(data);
-        App.updateFormView(data);
-        App.updateRecentLinkView(data);
+        App.updateShortenForm(data);
+        App.updateRecentLinkList(data);
       });
 
       App.shortenButton.hide();
@@ -65,33 +74,42 @@ var App = {
   // View render and updates
 
   renderElements: function() {
-    var isExistShortUrlsInCookie = document.cookie.split(';')[0].split('=')[1].length;
-    if (isExistShortUrlsInCookie) {
+    var isExistshortUrlsInCookie = document.cookie.split(';')[0].split('=')[1].length;
+    if (isExistshortUrlsInCookie) {
       var linksPromise = App.getExistingLinksFromCookie();
-      App.renderExistingLinksView(linksPromise);
+      App.renderExistingLinksList(linksPromise);
     }
   },
 
-  renderExistingLinksView: function(linksPromise) {
+  renderExistingLinksList: function(linksPromise) {
     linksPromise.done(function(data) {
       console.log('renderTableWithArray ' + data);
     });
 
   },
 
-  updateFormView: function(data) {
-    var shortUrlWithDomain = window.location.origin + '/' + data.shortURL;
+  updateShortenForm: function(data) {
+    var shortUrlWithDomain = window.location.origin + '/' + data.shortUrl;
     App.shortenForm.val(shortUrlWithDomain).select();
   },
 
-  updateRecentLinkView: function(data) {
+  updateRecentLinkList: function(data) {
+    var shortUrlWithDomain = window.location.origin + '/' + data.shortUrl;
+    App.recentLinkListshortUrl.attr('href', shortUrlWithDomain);
+    App.recentLinkListshortUrl.text(shortUrlWithDomain);
 
+    App.recentLinkListfullUrl.attr('href', data.fullUrl);
+    App.recentLinkListfullUrl.text(data.fullUrl);
+
+    App.recentLinkListClicksAmount.text(data.clicks);
+
+    App.recentLinkListContainer.fadeIn(1000);
   },
 
   updateCookie: function(data) {
     var expires = App.getExpiresCookieString();
     var tempLinks = document.cookie.split(';')[0];
-    tempLinks += data.shortURL + ':';
+    tempLinks += data.shortUrl + ':';
 
     document.cookie = tempLinks + ';' + expires;
     console.log(document.cookie);

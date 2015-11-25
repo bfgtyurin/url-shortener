@@ -9,10 +9,23 @@ h3 {
   font-weight: normal;
 }
 
+p {
+  font-size: 12px;
+}
+
 .page-title {
   color: #a3aaae;
 }
 
 #copyButton {
   display: none;
+}
+
+#recentLinkListContainer {
+  display: none;
+  margin-top: 40px;
+}
+
+#existingLinksListContainer {
+  margin-top: 40px;
 }
