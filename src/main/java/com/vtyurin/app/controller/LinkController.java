@@ -25,17 +25,22 @@ public class LinkController implements HttpRequestHandler {
     public void handleRequest(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.handleRequest";
         final String REQUEST_METHOD = req.getMethod();
-        LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullLink from request = " + req.getParameter("link"));
 
         if ("POST".equals(REQUEST_METHOD)) {
-            String fullLink = req.getParameter("link");
-            handlePostRequest(fullLink, resp);
+            String fullUrl = req.getParameter("fullUrl");
+            handlePostRequest(fullUrl, resp);
+
+            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullUrl from request = " + fullUrl);
+        } else if ("GET".equals(REQUEST_METHOD)) {
+            String shortUrls = req.getParameter("shortUrls");
+            resp.getOutputStream().write("stub".getBytes());
+            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", shortLinks from request = " + shortUrls);
         }
     }
 
-    void handlePostRequest(String fullURL, HttpServletResponse resp) {
-        if (URL.isValid(fullURL)) {
-            Link link = getExistingLinkObjectOrCreateNew(fullURL);
+    void handlePostRequest(String fullUrl, HttpServletResponse resp) {
+        if (URL.isValid(fullUrl)) {
+            Link link = getExistingLinkObjectOrCreateNew(fullUrl);
             sendLinkResponse(link, resp);
         } else {
             sendWarningResponse(resp);
@@ -43,21 +48,21 @@ public class LinkController implements HttpRequestHandler {
         }
     }
 
-    Link getExistingLinkObjectOrCreateNew(String fullURL) {
-        Link link = linkDao.getByFullURL(fullURL);
+    Link getExistingLinkObjectOrCreateNew(String fullUrl) {
+        Link link = linkDao.getByFullURL(fullUrl);
         if (Objects.isNull(link.getId())) {
-            link = createNewLinkObjectWithUrl(fullURL);
+            link = createNewLinkObjectWithUrl(fullUrl);
         }
 
         return link;
     }
 
-    Link createNewLinkObjectWithUrl(String fullURL) {
+    Link createNewLinkObjectWithUrl(String fullUrl) {
         String shortUrl;
         do {
             shortUrl = SequenceGenerator.generate();
         } while (shortUrlInvalid(shortUrl));
-        Link link = new Link(fullURL, shortUrl, 0);
+        Link link = new Link(fullUrl, shortUrl, 0);
         linkDao.save(link);
         LOGGER.info("New Link created = " + link);
 
