@@ -32,14 +32,6 @@ var App = {
     App.client.on('copy', App.copyButtonHandler.bind(App));
   },
 
-  renderElements: function() {
-    var isExistShortUrlsInCookie = document.cookie.split(';')[0].split('=')[1].length;
-    if (isExistShortUrlsInCookie) {
-      var linksPromise = App.getExistingLinksFromCookie();
-      App.renderExistingLinksView(linksPromise);
-    }
-  },
-
   // Handlers
 
   shortenFormInputHandler: function() {
@@ -72,19 +64,27 @@ var App = {
 
   // View render and updates
 
-  updateFormView: function(data) {
-    var shortUrlWithDomain = window.location.origin + '/' + data.shortURL;
-    App.shortenForm.val(shortUrlWithDomain).select();
-  },
-
-  updateRecentLinkView: function(data) {
-
+  renderElements: function() {
+    var isExistShortUrlsInCookie = document.cookie.split(';')[0].split('=')[1].length;
+    if (isExistShortUrlsInCookie) {
+      var linksPromise = App.getExistingLinksFromCookie();
+      App.renderExistingLinksView(linksPromise);
+    }
   },
 
   renderExistingLinksView: function(linksPromise) {
     linksPromise.done(function(data) {
       console.log('renderTableWithArray ' + data);
     });
+
+  },
+
+  updateFormView: function(data) {
+    var shortUrlWithDomain = window.location.origin + '/' + data.shortURL;
+    App.shortenForm.val(shortUrlWithDomain).select();
+  },
+
+  updateRecentLinkView: function(data) {
 
   },
 
@@ -98,7 +98,7 @@ var App = {
   },
 
   getExistingLinksFromCookie: function() {
-    var shortLinks = document.cookie.split(';')[0].split('=')[1];
+    var shortLinks = document.cookie.split(';')[0];
     console.log(shortLinks);
     var promise = App.ajaxGetRequest(shortLinks);
 

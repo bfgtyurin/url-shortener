@@ -13,6 +13,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 public class LinkController implements HttpRequestHandler {
@@ -33,19 +36,25 @@ public class LinkController implements HttpRequestHandler {
             LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullUrl from request = " + fullUrl);
         } else if ("GET".equals(REQUEST_METHOD)) {
             String shortUrls = req.getParameter("shortUrls");
-            resp.getOutputStream().write("stub".getBytes());
-            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", shortLinks from request = " + shortUrls);
+            handleGetRequest(shortUrls, resp);
+
+            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", shortUrls from request = " + shortUrls);
         }
     }
 
     void handlePostRequest(String fullUrl, HttpServletResponse resp) {
         if (URL.isValid(fullUrl)) {
             Link link = getExistingLinkObjectOrCreateNew(fullUrl);
-            sendLinkResponse(link, resp);
+            sendResponse(link, resp);
         } else {
             sendWarningResponse(resp);
             LOGGER.info("Link from user is invalid");
         }
+    }
+
+    void handleGetRequest(String shortUrls, HttpServletResponse resp) throws IOException {
+        List<Link> links = tryCreateLinkListWithShortUrls(shortUrls);
+        sendResponse(links, resp);
     }
 
     Link getExistingLinkObjectOrCreateNew(String fullUrl) {
@@ -69,19 +78,51 @@ public class LinkController implements HttpRequestHandler {
         return link;
     }
 
-    void sendLinkResponse(Link link, HttpServletResponse resp) {
+    List<Link> tryCreateLinkListWithShortUrls(String shortUrls) {
+        List<Link> links;
         try {
-            sendLinkJsonResponse(link, resp);
+            links = createLinkListWithShortUrls(shortUrls);
+        } catch (IllegalArgumentException e) {
+            LOGGER.error(e);
+            links = Collections.emptyList();
+        }
+
+        return links;
+    }
+
+    List<Link> createLinkListWithShortUrls(String shortUrls) {
+        if (shortUrls.length() < 1) {
+            throw new IllegalArgumentException("illegal shortUrl string length [" + shortUrls.length() + "]");
+        }
+        if (!shortUrls.contains(":")) {
+            throw new IllegalArgumentException("illegal shortUrl string format, it should be like [string1:string2]");
+        }
+
+        String[] array = shortUrls.split(":");
+        List<Link> links = new ArrayList<>();
+        for (String s : array) {
+            if (s.length() != 7) {
+                throw new IllegalArgumentException("illegal shortUrl string length [" + s.length() + "]");
+            }
+            links.add(linkDao.getByShortUrl(s));
+        }
+
+        return links;
+    }
+
+    void sendResponse(Object object, HttpServletResponse resp) {
+        try {
+            sendJsonResponse(object, resp);
         } catch (IOException e) {
             LOGGER.error(e);
         }
     }
 
-    void sendLinkJsonResponse(Link link, HttpServletResponse resp) throws IOException {
-        LOGGER.info("Returning link to user = " + link);
+    void sendJsonResponse(Object object, HttpServletResponse resp) throws IOException {
+        LOGGER.info("Returning json to user = " + object);
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json");
-        mapper.writeValue(resp.getOutputStream(), link);
+        mapper.writeValue(resp.getOutputStream(), object);
     }
 
     boolean shortUrlInvalid(String shortUrl) {
