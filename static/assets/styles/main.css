@@ -33,7 +33,7 @@ p {
 }
 
 .smallCopyButton {
-  margin-left: 60px;
+  margin-left: 30px;
 }
 
 .clicksAmount {
@@ -43,6 +43,6 @@ p {
 
 .shortUrl {
   display: inline-block;
-  width: 210px;
+  width: 300px;
 }
 
