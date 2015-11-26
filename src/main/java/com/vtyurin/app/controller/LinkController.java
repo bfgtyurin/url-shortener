@@ -91,11 +91,13 @@ public class LinkController implements HttpRequestHandler {
         } catch (IOException e) {
             LOGGER.error(e);
         }
+
         String title;
         if (doc != null) {
             title = doc.title();
+        } else {
+            title = "Title not available";
         }
-        title = "Title not available";
         LOGGER.info("page title is " + title);
 
         return title;
