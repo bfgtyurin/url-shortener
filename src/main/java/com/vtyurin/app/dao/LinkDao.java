@@ -14,11 +14,11 @@ public class LinkDao {
 
     private static final Logger LOGGER = Logger.getLogger(LinkDao.class);
 
-    private static final String SELECT_BY_ID = "SELECT * FROM Links WHERE id=?";
-    private static final String INSERT_STATEMENT = "INSERT INTO Links (clicks, fullUrl, shortUrl) VALUES (?, ?, ?)";
-    private static final String UPDATE_STATEMENT = "UPDATE Links SET clicks = ? WHERE id = ?";
-    private static final String SELECT_BY_FULL_URL_STATEMENT = "SELECT * FROM Links WHERE fullURL=?";
-    private static final String SELECT_BY_SHORT_URL_STATEMENT = "SELECT * FROM Links WHERE shortURL=?";
+    private static final String SELECT_BY_ID = "SELECT * FROM links WHERE id=?";
+    private static final String INSERT_STATEMENT = "INSERT INTO links (clicks, fullUrl, shortUrl, title) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_STATEMENT = "UPDATE links SET clicks = ? WHERE id = ?";
+    private static final String SELECT_BY_FULL_URL_STATEMENT = "SELECT * FROM links WHERE fullURL=?";
+    private static final String SELECT_BY_SHORT_URL_STATEMENT = "SELECT * FROM links WHERE shortUrl=?";
 
     @Autowired
     private BasicDataSource dataSource;
@@ -32,7 +32,8 @@ public class LinkDao {
                 int idx = 1;
                 preparedStatement.setLong(idx++, link.getClicks());
                 preparedStatement.setString(idx++, link.getFullUrl());
-                preparedStatement.setString(idx, link.getShortUrl());
+                preparedStatement.setString(idx++, link.getShortUrl());
+                preparedStatement.setString(idx, link.getTitle());
                 preparedStatement.execute();
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
@@ -78,11 +79,11 @@ public class LinkDao {
         return link;
     }
 
-    public Link getByShortUrl(String shortURL) {
+    public Link getByShortUrl(String shortUrl) {
         Link link = new Link();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(SELECT_BY_SHORT_URL_STATEMENT)) {
-                pst.setString(1, shortURL);
+                pst.setString(1, shortUrl);
                 ResultSet resultSet = pst.executeQuery();
                 link = initializeLink(resultSet);
             }
@@ -115,6 +116,7 @@ public class LinkDao {
             link.setClicks(resultSet.getInt("clicks"));
             link.setFullUrl(resultSet.getString("fullURL"));
             link.setShortUrl(resultSet.getString("shortURL"));
+            link.setTitle(resultSet.getString("title"));
         }
 
         LOGGER.info("Initialized Link return = " + link);

@@ -118,7 +118,12 @@ var App = {
     App.recentLinkShortUrl.text(shortUrlWithDomain);
 
     App.recentLinkFullUrl.attr('href', data.fullUrl);
-    App.recentLinkFullUrl.text(data.fullUrl);
+    App.recentLinkFullUrl.text(data.title);
+//    App.getPageTitle(data.fullUrl).done(function(data) {
+//      var matches = data.match(/<title>(.*?)<\/title>/);
+//      App.recentLinkFullUrl.text(matches[0]);
+//    });
+
 
     App.recentLinkClicksAmount.text(data.clicks);
 
@@ -155,13 +160,19 @@ var App = {
     return urlRegEx.test(formData);
   },
 
+  getPageTitle: function(url) {
+    var promise = App.ajaxGetUrlRequest(url);
+    return promise;
+  },
+
   // html
 
   createExistingLinksListElement: function(link) {
     return '<li class="list-group-item">' +
            '<div><a class="shortUrl" href="' + link.shortUrl + '">' + App.getUrlWithStr(link.shortUrl) +
            '</a><button type="button" class="smallCopyButton btn btn-default btn-xs">COPY</button></div>' +
-           '<div><a class="fullUrl" href="' + link.fullUrl +'">' + link.fullUrl + '</a>' +
+           '<div><span class="glyphicon glyphicon-stats pull-right" aria-hidden="true"></span>' +
+           '<a class="fullUrl" href="' + link.fullUrl +'">' + link.title + '</a>' +
            '<a class="clicksAmount pull-right">' + link.clicks + '</a></div></li>';
   },
 

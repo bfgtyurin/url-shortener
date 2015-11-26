@@ -17,6 +17,14 @@ p {
   color: #a3aaae;
 }
 
+#shortenButton, #copyButton {
+  color: #fff;
+  border: 0;
+  background-color: #33CC33;
+  border-radius: 0 3px 3px 0;
+  height: 46px;
+}
+
 #copyButton {
   display: none;
 }
@@ -24,12 +32,24 @@ p {
 #recentLinkContainer {
   display: none;
   margin-top: 40px;
-  word-wrap:break-word;
 }
 
 #existingLinksListContainer {
   margin-top: 40px;
   word-wrap:break-word;
+}
+
+a.shortUrl {
+   color: #33CC33;
+   font-size: 16px;
+   text-decoration: none;
+   line-height: 20px;
+}
+
+a.fullUrl {
+  color: #707a80;
+  font-size: 13px;
+  line-height: 20px;
 }
 
 .smallCopyButton {
@@ -43,6 +63,13 @@ p {
 
 .shortUrl {
   display: inline-block;
-  width: 250px;
+  width: 270px;
+}
+
+.clicksAmount {
+margin-right: 10px;
+}
+
+.glyphicon {
 }
 

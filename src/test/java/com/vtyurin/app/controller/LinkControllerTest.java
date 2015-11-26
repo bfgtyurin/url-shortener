@@ -16,12 +16,13 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import java.util.List;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(JUnitParamsRunner.class)
 @ContextConfiguration(classes = {ApplicationContext.class})
 @WebAppConfiguration
-@ActiveProfiles(Profiles.APPLICATION)
+@ActiveProfiles(Profiles.INTEGRATION_TEST)
 public class LinkControllerTest {
 
     private TestContextManager testContextManager;
@@ -42,7 +43,7 @@ public class LinkControllerTest {
     @Test
     public void ShortUrlInvalidTest() {
         String shortURL = "12345aS";
-        assertTrue(linkController.shortUrlInvalid(shortURL));
+        assertFalse(linkController.shortUrlInvalid(shortURL));
     }
 
     @Test

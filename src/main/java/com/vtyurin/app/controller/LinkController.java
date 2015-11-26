@@ -6,6 +6,8 @@ import com.vtyurin.app.model.Link;
 import com.vtyurin.app.util.SequenceGenerator;
 import com.vtyurin.app.util.URL;
 import org.apache.log4j.Logger;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.HttpRequestHandler;
 
@@ -73,11 +75,30 @@ public class LinkController implements HttpRequestHandler {
         do {
             shortUrl = SequenceGenerator.generate();
         } while (shortUrlInvalid(shortUrl));
+        String title = getPageTitle(fullUrl);
         Link link = new Link(fullUrl, shortUrl, 0);
+        link.setTitle(title);
         linkDao.save(link);
         LOGGER.info("New Link created = " + link);
 
         return link;
+    }
+
+    String getPageTitle(String fullUrl) {
+        Document doc = null;
+        try {
+            doc = Jsoup.connect(fullUrl).get();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+        String title;
+        if (doc != null) {
+            title = doc.title();
+        }
+        title = "Title not available";
+        LOGGER.info("page title is " + title);
+
+        return title;
     }
 
     List<Link> tryCreateLinkListWithShortUrls(String shortUrls) {

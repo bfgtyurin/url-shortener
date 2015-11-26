@@ -5,6 +5,7 @@ public class Link {
     private Long id = null;
     private String fullUrl;
     private String shortUrl;
+    private String title;
     private long clicks;
 
     public Link() {
@@ -49,6 +50,15 @@ public class Link {
         this.shortUrl = shortUrl;
     }
 
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     public long getClicks() {
         return clicks;
     }
@@ -62,6 +72,7 @@ public class Link {
         return "Link {id: " + id +
                 ", fullUrl:'" + fullUrl + '\'' +
                 ", shortUrl:'" + shortUrl + '\'' +
+                ", title:'" + title + '\'' +
                 ", clicks:" + clicks +
                 "\'}";
     }

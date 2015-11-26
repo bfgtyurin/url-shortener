@@ -1,1 +1,1 @@
-DROP TABLE Links;
+DROP TABLE links;
