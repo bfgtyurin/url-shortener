@@ -21,11 +21,28 @@ p {
   display: none;
 }
 
-#recentLinkListContainer {
+#recentLinkContainer {
   display: none;
   margin-top: 40px;
+  word-wrap:break-word;
 }
 
 #existingLinksListContainer {
   margin-top: 40px;
+  word-wrap:break-word;
 }
+
+.smallCopyButton {
+  margin-left: 60px;
+}
+
+.clicksAmount {
+  text-decoration: none;
+  color: #a3aaae;
+}
+
+.shortUrl {
+  display: inline-block;
+  width: 210px;
+}
+

@@ -18,6 +18,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import static com.vtyurin.app.util.SequenceGenerator.SEQUENCE_LENGTH;
+
 public class LinkController implements HttpRequestHandler {
     private final static Logger LOGGER = Logger.getLogger(LinkController.class);
 
@@ -101,7 +103,7 @@ public class LinkController implements HttpRequestHandler {
         String[] array = shortUrls.split(":");
         List<Link> links = new ArrayList<>();
         for (String s : array) {
-            if (s.length() != 7) {
+            if (s.length() != SEQUENCE_LENGTH) {
                 throw new IllegalArgumentException("illegal shortUrl string length [" + s.length() + "]");
             }
             links.add(linkDao.getByShortUrl(s));

@@ -21,18 +21,18 @@ Install PostgreSQL.
 Create database and create links table:
 
 ```
-CREATE TABLE links (id SERIAL PRIMARY KEY NOT NULL, clicks INTEGER, fullURL VARCHAR(555), shortURL VARCHAR(10));
+CREATE TABLE links (id SERIAL PRIMARY KEY NOT NULL, clicks INTEGER, fullUrl VARCHAR(555), shortUrl VARCHAR(10));
 ```
 
 Then set the `DATABASE_URL` environment variable (using the correct values):
 
 * On Linux/Mac:
 
-        export DATABASE_URL=postgres://foo:foo@localhost/hellodb
+        export DATABASE_URL=postgres://foo:foo@localhost/<your-database>
 
 * On Windows:
 
-        set DATABASE_URL=postgres://foo:foo@localhost/hellodb
+        set DATABASE_URL=postgres://foo:foo@localhost/<your-database>
 
 ##### Run
 Unix
