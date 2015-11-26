@@ -36,7 +36,6 @@ p {
 
 #existingLinksListContainer {
   margin-top: 40px;
-  word-wrap:break-word;
 }
 
 a.shortUrl {
@@ -48,12 +47,13 @@ a.shortUrl {
 
 a.fullUrl {
   color: #707a80;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 20px;
 }
 
 .smallCopyButton {
   margin-left: 15px;
+  display: none;
 }
 
 .clicksAmount {
@@ -63,7 +63,7 @@ a.fullUrl {
 
 .shortUrl {
   display: inline-block;
-  width: 280px;
+  width: 285px;
 }
 
 .clicksAmount {
@@ -72,4 +72,11 @@ margin-right: 10px;
 
 .glyphicon {
 }
+
+.link-list-item {
+  border: 0;
+  border-bottom: 1px solid #e3e6e7 !important;
+
+}
+
 

@@ -168,7 +168,7 @@ var App = {
   // html
 
   createExistingLinksListElement: function(link) {
-    return '<li class="list-group-item">' +
+    return '<li class="list-group-item link-list-item">' +
            '<div><a class="shortUrl" href="' + link.shortUrl + '">' + App.getUrlWithStr(link.shortUrl) +
            '</a><button type="button" class="smallCopyButton btn btn-default btn-xs">COPY</button></div>' +
            '<div><span class="glyphicon glyphicon-stats pull-right" aria-hidden="true"></span>' +
