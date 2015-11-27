@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.HttpRequestHandler;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -40,9 +41,12 @@ public class LinkController implements HttpRequestHandler {
             LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullUrl from request = " + fullUrl);
         } else if ("GET".equals(REQUEST_METHOD)) {
             String shortUrls = req.getParameter("shortUrls");
-            handleGetRequest(shortUrls, resp);
 
-            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", shortUrls from request = " + shortUrls);
+
+            Cookie[] cookies = req.getCookies();
+            String value = cookies[0].getValue();
+            LOGGER.info("Cookie value: : " + value);
+            handleGetRequest(req.getCookies()[0].getValue(), resp);
         }
     }
 

@@ -8,17 +8,9 @@ $(function() {
 var App = {
 
   init: function() {
-    App.setCookie();
     App.cacheElements();
     App.bindEvents();
     App.renderElements();
-  },
-
-  setCookie: function() {
-    if (!document.cookie) {
-      var expires = App.getExpiresCookieString();
-      document.cookie = 'shortUrls=;' + expires;
-    }
   },
 
   cacheElements: function() {
@@ -119,11 +111,6 @@ var App = {
 
     App.recentLinkFullUrl.attr('href', data.fullUrl);
     App.recentLinkFullUrl.text(data.title);
-//    App.getPageTitle(data.fullUrl).done(function(data) {
-//      var matches = data.match(/<title>(.*?)<\/title>/);
-//      App.recentLinkFullUrl.text(matches[0]);
-//    });
-
 
     App.recentLinkClicksAmount.text(data.clicks);
 
@@ -133,24 +120,26 @@ var App = {
   updateCookie: function(data) {
     var expires = App.getExpiresCookieString();
     var shortUrlCookieKeyValue = document.cookie.split(';')[0];
+    var shortUrlCookieValue = shortUrlCookieKeyValue.substring('shortUrls='.length);
     if (App.isNewShortLink(data)) {
-      shortUrlCookieKeyValue += data.shortUrl + ':';
-      document.cookie = shortUrlCookieKeyValue + ';' + expires;
+      shortUrlCookieValue += data.shortUrl + '/';
+      document.cookie = 'shortUrls=' + shortUrlCookieValue + ';' + expires;
     }
+
   },
 
   isNewShortLink: function(data) {
     var value = data.shortUrl;
     var keyValueString = document.cookie.split(';')[0];
     var temp = keyValueString.substring("shortUrls=".length);
-    var array = temp.split(':');
+    var array = temp.split('/');
 
     return array.indexOf(value) === -1;
   },
 
   getExistingLinksFromCookie: function() {
     var shortLinks = document.cookie.split(';')[0];
-    var promise = App.ajaxGetRequest(shortLinks);
+    var promise = App.ajaxGetRequest(document.cookie);
 
     return promise;
   },
@@ -191,8 +180,8 @@ var App = {
     return $.ajax({
       method: "GET",
       context: App,
-      url: "shorten",
-      data: data
+      url: "shorten"
+//      data: data
     });
   },
 
@@ -201,7 +190,7 @@ var App = {
   getExpiresCookieString: function() {
     var d = new Date();
     d.setTime(d.getTime() + (30*24*60*60*1000));
-    return 'expires=' + d.toUTCString();
+    return '; expires=' + d.toUTCString();
   },
 
   getUrlWithStr: function(str) {
