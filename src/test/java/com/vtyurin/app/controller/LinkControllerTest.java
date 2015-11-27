@@ -61,7 +61,7 @@ public class LinkControllerTest {
 
     @Test
     public void createLinkListWithShortUrls() {
-        List list = linkController.createLinkListWithShortUrls("zxcvb12:qwert34:asdfg56");
+        List list = linkController.createLinkListWithShortUrls("zxcvb12/qwert34/asdfg56");
         assertEquals(3, list.size());
     }
 

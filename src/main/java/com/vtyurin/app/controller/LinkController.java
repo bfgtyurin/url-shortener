@@ -26,6 +26,9 @@ import static com.vtyurin.app.util.SequenceGenerator.SEQUENCE_LENGTH;
 public class LinkController implements HttpRequestHandler {
     private final static Logger LOGGER = Logger.getLogger(LinkController.class);
 
+    private static final String SHORT_URL_COOKIE_NAME = "shortUrls";
+    private static final String SHORT_URL_DELIMITER = "/";
+
     @Autowired
     private LinkDao linkDao;
 
@@ -36,17 +39,18 @@ public class LinkController implements HttpRequestHandler {
 
         if ("POST".equals(REQUEST_METHOD)) {
             String fullUrl = req.getParameter("fullUrl");
+            LOGGER.info(METHOD_NAME + " HTTP Method : " + REQUEST_METHOD + ", fullUrl parameter value = " + fullUrl);
+
             handlePostRequest(fullUrl, resp);
-
-            LOGGER.info(METHOD_NAME + "HTTP Method : " + REQUEST_METHOD + ", fullUrl from request = " + fullUrl);
         } else if ("GET".equals(REQUEST_METHOD)) {
-            String shortUrls = req.getParameter("shortUrls");
-
-
             Cookie[] cookies = req.getCookies();
-            String value = cookies[0].getValue();
-            LOGGER.info("Cookie value: : " + value);
-            handleGetRequest(req.getCookies()[0].getValue(), resp);
+            for (Cookie cookie : cookies) {
+                if (SHORT_URL_COOKIE_NAME.equals(cookie.getName())) {
+                    String cookieValue = cookie.getValue();
+                    LOGGER.info(METHOD_NAME + " HTTP Method : " + REQUEST_METHOD + ", cookieValue = " + cookieValue);
+                    handleGetRequest(cookieValue, resp);
+                }
+            }
         }
     }
 
@@ -66,7 +70,7 @@ public class LinkController implements HttpRequestHandler {
     }
 
     Link getExistingLinkObjectOrCreateNew(String fullUrl) {
-        Link link = linkDao.getByFullURL(fullUrl);
+        Link link = linkDao.getByFullUrl(fullUrl);
         if (Objects.isNull(link.getId())) {
             link = createNewLinkObjectWithUrl(fullUrl);
         }
@@ -75,6 +79,8 @@ public class LinkController implements HttpRequestHandler {
     }
 
     Link createNewLinkObjectWithUrl(String fullUrl) {
+        final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.createNewLinkObjectWithUrl ";
+
         String shortUrl;
         do {
             shortUrl = SequenceGenerator.generate();
@@ -83,12 +89,14 @@ public class LinkController implements HttpRequestHandler {
         Link link = new Link(fullUrl, shortUrl, 0);
         link.setTitle(title);
         linkDao.save(link);
-        LOGGER.info("New Link created = " + link);
 
+        LOGGER.info(METHOD_NAME + "return = " + link);
         return link;
     }
 
     String getPageTitle(String fullUrl) {
+        final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.getPageTitle ";
+
         Document doc = null;
         try {
             doc = Jsoup.connect(fullUrl).get();
@@ -102,8 +110,8 @@ public class LinkController implements HttpRequestHandler {
         } else {
             title = "Title not available";
         }
-        LOGGER.info("page title is " + title);
 
+        LOGGER.info(METHOD_NAME + " return = " + title);
         return title;
     }
 
@@ -116,18 +124,18 @@ public class LinkController implements HttpRequestHandler {
             links = Collections.emptyList();
         }
 
-        return links;
+        return Collections.unmodifiableList(links);
     }
 
     List<Link> createLinkListWithShortUrls(String shortUrls) {
         if (shortUrls.length() < 1) {
             throw new IllegalArgumentException("illegal shortUrl string length [" + shortUrls.length() + "]");
         }
-        if (!shortUrls.contains(":")) {
+        if (!shortUrls.contains(SHORT_URL_DELIMITER)) {
             throw new IllegalArgumentException("illegal shortUrl string format, it should be like [string1:string2]");
         }
 
-        String[] array = shortUrls.split(":");
+        String[] array = shortUrls.split(SHORT_URL_DELIMITER);
         List<Link> links = new ArrayList<>();
         for (String s : array) {
             if (s.length() != SEQUENCE_LENGTH) {
@@ -136,22 +144,26 @@ public class LinkController implements HttpRequestHandler {
             links.add(linkDao.getByShortUrl(s));
         }
 
-        return links;
+        return Collections.unmodifiableList(links);
     }
 
     void sendResponse(Object object, HttpServletResponse resp) {
+        final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.sendResponse ";
+
         try {
             sendJsonResponse(object, resp);
         } catch (IOException e) {
-            LOGGER.error(e);
+            LOGGER.error(METHOD_NAME + e);
         }
     }
 
     void sendJsonResponse(Object object, HttpServletResponse resp) throws IOException {
-        LOGGER.info("Returning json to user = " + object);
+        final String METHOD_NAME = "com.vtyurin.app.controller.LinkController.sendJsonResponse ";
+
         ObjectMapper mapper = new ObjectMapper();
         resp.setContentType("application/json");
         mapper.writeValue(resp.getOutputStream(), object);
+        LOGGER.info(METHOD_NAME + " sending json response to user = " + object);
     }
 
     boolean shortUrlInvalid(String shortUrl) {

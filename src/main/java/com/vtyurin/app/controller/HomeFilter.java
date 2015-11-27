@@ -28,7 +28,6 @@ public class HomeFilter extends DelegatingFilterProxy {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
         String URI = httpRequest.getRequestURI().substring(1);
-        LOGGER.info("URI = " + URI);
 
         if (isValidUrl(URI)) {
 

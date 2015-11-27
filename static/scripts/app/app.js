@@ -75,9 +75,8 @@ var App = {
   // View render and updates
 
   renderElements: function() {
-    var isExistShortUrlsInCookie = document.cookie.split(';')[0].split('=')[1].length;
-    if (isExistShortUrlsInCookie) {
-      var linksPromise = App.getExistingLinksFromCookie();
+    if (document.cookie) {
+      var linksPromise = App.ajaxGetExistingLinksRequest();
       App.renderExistingLinksList(linksPromise);
     }
   },
@@ -89,7 +88,6 @@ var App = {
         App.existingLinksList.append(App.createExistingLinksListElement(link));
       });
     });
-
   },
 
   updateExistingLinksList: function(data) {
@@ -125,7 +123,6 @@ var App = {
       shortUrlCookieValue += data.shortUrl + '/';
       document.cookie = 'shortUrls=' + shortUrlCookieValue + ';' + expires;
     }
-
   },
 
   isNewShortLink: function(data) {
@@ -135,13 +132,6 @@ var App = {
     var array = temp.split('/');
 
     return array.indexOf(value) === -1;
-  },
-
-  getExistingLinksFromCookie: function() {
-    var shortLinks = document.cookie.split(';')[0];
-    var promise = App.ajaxGetRequest(document.cookie);
-
-    return promise;
   },
 
   isValidForm: function(formData) {
@@ -176,12 +166,11 @@ var App = {
     });
   },
 
-  ajaxGetRequest: function (data) {
+  ajaxGetExistingLinksRequest: function (data) {
     return $.ajax({
       method: "GET",
       context: App,
       url: "shorten"
-//      data: data
     });
   },
 

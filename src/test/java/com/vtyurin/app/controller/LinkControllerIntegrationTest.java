@@ -74,7 +74,7 @@ public class LinkControllerIntegrationTest {
     public void saveLinkShouldSave() throws Exception {
         String fullUrl = "https://zxciop.com";
         linkController.handlePostRequest(fullUrl, new MockHttpServletResponse());
-        Link link = linkDao.getByFullURL(fullUrl);
+        Link link = linkDao.getByFullUrl(fullUrl);
 
         assertNotNull(link.getId());
         assertNotNull(link.getFullUrl());

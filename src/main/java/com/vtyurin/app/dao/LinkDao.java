@@ -27,6 +27,9 @@ public class LinkDao {
     }
 
     public void save(final Link link) {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.save ";
+        LOGGER.info(METHOD_NAME + "argument = " + link);
+
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_STATEMENT)) {
                 int idx = 1;
@@ -38,16 +41,18 @@ public class LinkDao {
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
                     link.setId(generatedKeys.getInt(1));
+                    LOGGER.info(METHOD_NAME +" save = " + link);
                 }
-                LOGGER.info(link + " saved");
             }
         } catch (SQLException e) {
-            LOGGER.error("Could not execute INSERT PreparedStatement");
-            e.printStackTrace();
+            LOGGER.error(METHOD_NAME + INSERT_STATEMENT, e);
         }
     }
 
     public Link getById(long id) {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.getById ";
+        LOGGER.info(METHOD_NAME + "argument = " + id);
+
         Link link = new Link();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(SELECT_BY_ID)) {
@@ -56,30 +61,36 @@ public class LinkDao {
                 link = initializeLink(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            LOGGER.error("Could not execute SELECT BY ID PreparedStatement");
+            LOGGER.error(METHOD_NAME + SELECT_BY_ID, e);
         }
 
+        LOGGER.info(METHOD_NAME + "return = " + link);
         return link;
     }
 
-    public Link getByFullURL(String fullURL) {
+    public Link getByFullUrl(String fullUrl) {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.getByFullUrl ";
+        LOGGER.info(METHOD_NAME + "argument = " + fullUrl);
+
         Link link = new Link();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(SELECT_BY_FULL_URL_STATEMENT)) {
-                pst.setString(1, fullURL);
+                pst.setString(1, fullUrl);
                 ResultSet resultSet = pst.executeQuery();
                 link = initializeLink(resultSet);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
-            LOGGER.error("Could not execute SELECT BY FULL URL PreparedStatement");
+            LOGGER.error(METHOD_NAME + SELECT_BY_FULL_URL_STATEMENT, e);
         }
 
+        LOGGER.info(METHOD_NAME + "return = " + link);
         return link;
     }
 
     public Link getByShortUrl(String shortUrl) {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.getByShortUrl ";
+        LOGGER.info(METHOD_NAME + "argument = " + shortUrl);
+
         Link link = new Link();
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(SELECT_BY_SHORT_URL_STATEMENT)) {
@@ -88,28 +99,33 @@ public class LinkDao {
                 link = initializeLink(resultSet);
             }
         } catch (SQLException e) {
-            LOGGER.error("Could not execute SELECT BY SHORT URL PreparedStatement");
-            e.printStackTrace();
+            LOGGER.error(METHOD_NAME + SELECT_BY_SHORT_URL_STATEMENT, e);
         }
 
+        LOGGER.info(METHOD_NAME + "return = " + link);
         return link;
     }
 
     public void update(Link link) {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.update ";
+        LOGGER.info(METHOD_NAME + "argument = " + link);
+
         try (Connection connection = dataSource.getConnection()) {
             try (PreparedStatement pst = connection.prepareStatement(UPDATE_STATEMENT)) {
                 int idx = 1;
                 pst.setLong(idx++, link.getClicks());
                 pst.setLong(idx, link.getId());
                 pst.execute();
-                LOGGER.info(link + " updated");
+                LOGGER.info(METHOD_NAME + " updated = " + link);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            LOGGER.error(METHOD_NAME + UPDATE_STATEMENT + e);
         }
     }
 
     private Link initializeLink(ResultSet resultSet) throws SQLException {
+        final String METHOD_NAME = "com.vtyurin.app.dao.LinkDao.initializeLink ";
+
         final Link link = new Link();
         if (resultSet.next()) {
             link.setId(resultSet.getInt("id"));
@@ -119,7 +135,7 @@ public class LinkDao {
             link.setTitle(resultSet.getString("title"));
         }
 
-        LOGGER.info("Initialized Link return = " + link);
+        LOGGER.info(METHOD_NAME + "return = " + link);
         return link;
     }
 
