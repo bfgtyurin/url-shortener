@@ -8,64 +8,64 @@ $(function() {
 var App = {
 
   init: function() {
-    App.cacheElements();
-    App.bindEvents();
-    App.renderElements();
+    this.cacheElements();
+    this.bindEvents();
+    this.renderElements();
   },
 
   cacheElements: function() {
-    App.shortenForm = $("#shortenForm");
-    App.shortenButton = $("#shortenButton");
-    App.copyButton = $("#copyButton");
+    this.shortenForm = $("#shortenForm");
+    this.shortenButton = $("#shortenButton");
+    this.copyButton = $("#copyButton");
 
-    App.recentLinkContainer = $('#recentLinkContainer');
-    App.recentLink = $("#recentLink");
-    App.recentLinkShortUrl = $('#recentLink a.shortUrl');
-    App.recentLinkFullUrl = $('#recentLink a.fullUrl');
-    App.recentLinkClicksAmount = $('#recentLink a.clicksAmount');
-    App.recentLinkSmallCopyButton = $('.smallCopyButton');
+    this.recentLinkContainer = $('#recentLinkContainer');
+    this.recentLink = $("#recentLink");
+    this.recentLinkShortUrl = $('#recentLink a.shortUrl');
+    this.recentLinkFullUrl = $('#recentLink a.fullUrl');
+    this.recentLinkClicksAmount = $('#recentLink a.clicksAmount');
+    this.recentLinkSmallCopyButton = $('.smallCopyButton');
 
-    App.existingLinksList = $("#existingLinksList");
-    App.client = new ZeroClipboard(App.copyButton);
-    App.smallClient = new ZeroClipboard($('.smallCopyButton'));
+    this.existingLinksList = $("#existingLinksList");
+    this.client = new ZeroClipboard(this.copyButton);
+    this.smallClient = new ZeroClipboard($('.smallCopyButton'));
   },
 
   bindEvents: function() {
-    App.shortenButton.on('click', App.shortenButtonHandler.bind(App));
-    App.shortenForm.on('input', App.shortenFormInputHandler.bind(App));
-    App.client.on('copy', App.copyButtonHandler.bind(App));
-    App.smallClient.on('copy', App.smallCopyButtonHandler.bind(App));
+    this.shortenButton.on('click', this.shortenButtonHandler.bind(this));
+    this.shortenForm.on('input', this.shortenFormInputHandler.bind(this));
+    this.client.on('copy', this.copyButtonHandler.bind(this));
+    this.smallClient.on('copy', this.smallCopyButtonHandler.bind(this));
   },
 
   // Handlers
 
   shortenFormInputHandler: function() {
-    App.copyButton.hide();
-    App.shortenButton.show();
+    this.copyButton.hide();
+    this.shortenButton.show();
   },
 
   shortenButtonHandler: function(event) {
     event.preventDefault();
 
-    var formData = App.shortenForm.val();
-    if (App.isValidForm(formData)) {
-      var serializedFormData = App.shortenForm.serialize();
-      var promise = App.ajaxPostRequest(serializedFormData);
+    var formData = this.shortenForm.val();
+    if (this.isValidForm(formData)) {
+      var serializedFormData = this.shortenForm.serialize();
+      var promise = this.ajaxPostRequest(serializedFormData);
       promise.done(function(data) {
-        App.updateExistingLinksList(data);
-        App.updateCookie(data);
-        App.updateRecentLink(data);
-        App.updateShortenForm(data);
-      });
+        this.updateExistingLinksList(data);
+        this.updateCookie(data);
+        this.updateRecentLink(data);
+        this.updateShortenForm(data);
 
-      App.shortenButton.hide();
-      App.copyButton.show();
+        this.shortenButton.hide();
+        this.copyButton.show();
+      });
     }
 
   },
 
   copyButtonHandler: function(event) {
-      event.clipboardData.setData('text/plain', App.shortenForm.val());
+      event.clipboardData.setData('text/plain', this.shortenForm.val());
   },
 
   smallCopyButtonHandler: function(event) {
@@ -76,8 +76,8 @@ var App = {
 
   renderElements: function() {
     if (document.cookie) {
-      var linksPromise = App.ajaxGetExistingLinksRequest();
-      App.renderExistingLinksList(linksPromise);
+      var linksPromise = this.ajaxGetExistingLinksRequest();
+      this.renderExistingLinksList(linksPromise);
     }
   },
 
@@ -85,41 +85,41 @@ var App = {
     linksPromise.done(function(data) {
       console.log('renderExistingLinksList ' + data);
       data.forEach(function(link, i, arr) {
-        App.existingLinksList.append(App.createExistingLinksListElement(link));
-      });
+        this.existingLinksList.append(this.createExistingLinksListElement(link));
+      }, this);
     });
   },
 
   updateExistingLinksList: function(data) {
-    if (App.isNewShortLink(data)) {
-      App.existingLinksList.append(App.createExistingLinksListElement(data));
+    if (this.isNewShortLink(data)) {
+      this.existingLinksList.append(App.createExistingLinksListElement(data));
     }
   },
 
   updateShortenForm: function(data) {
-    var shortUrlWithDomain = App.getUrlWithStr(data.shortUrl);
-    App.shortenForm.val(shortUrlWithDomain).select();
+    var shortUrlWithDomain = this.getUrlWithStr(data.shortUrl);
+    this.shortenForm.val(shortUrlWithDomain).select();
   },
 
   updateRecentLink: function(data) {
-    var shortUrlWithDomain = App.getUrlWithStr(data.shortUrl);
+    var shortUrlWithDomain = this.getUrlWithStr(data.shortUrl);
 
-    App.recentLinkShortUrl.attr('href', shortUrlWithDomain);
-    App.recentLinkShortUrl.text(shortUrlWithDomain);
+    this.recentLinkShortUrl.attr('href', shortUrlWithDomain);
+    this.recentLinkShortUrl.text(shortUrlWithDomain);
 
-    App.recentLinkFullUrl.attr('href', data.fullUrl);
-    App.recentLinkFullUrl.text(data.title);
+    this.recentLinkFullUrl.attr('href', data.fullUrl);
+    this.recentLinkFullUrl.text(data.title);
 
-    App.recentLinkClicksAmount.text(data.clicks);
+    this.recentLinkClicksAmount.text(data.clicks);
 
-    App.recentLinkContainer.fadeIn(1000);
+    this.recentLinkContainer.fadeIn(1000);
   },
 
   updateCookie: function(data) {
-    var expires = App.getExpiresCookieString();
+    var expires = this.getExpiresCookieString();
     var shortUrlCookieKeyValue = document.cookie.split(';')[0];
     var shortUrlCookieValue = shortUrlCookieKeyValue.substring('shortUrls='.length);
-    if (App.isNewShortLink(data)) {
+    if (this.isNewShortLink(data)) {
       shortUrlCookieValue += data.shortUrl + '/';
       document.cookie = 'shortUrls=' + shortUrlCookieValue + ';' + expires;
     }
@@ -140,7 +140,7 @@ var App = {
   },
 
   getPageTitle: function(url) {
-    var promise = App.ajaxGetUrlRequest(url);
+    var promise = this.ajaxGetUrlRequest(url);
     return promise;
   },
 
@@ -148,7 +148,7 @@ var App = {
 
   createExistingLinksListElement: function(link) {
     return '<li class="list-group-item link-list-item">' +
-           '<div><a class="shortUrl" href="' + link.shortUrl + '">' + App.getUrlWithStr(link.shortUrl) +
+           '<div><a class="shortUrl" href="' + link.shortUrl + '">' + this.getUrlWithStr(link.shortUrl) +
            '</a><button type="button" class="smallCopyButton btn btn-default btn-xs">COPY</button></div>' +
            '<div><span class="glyphicon glyphicon-stats pull-right" aria-hidden="true"></span>' +
            '<a class="fullUrl" href="' + link.fullUrl +'">' + link.title + '</a>' +
@@ -160,7 +160,7 @@ var App = {
   ajaxPostRequest: function (formData) {
     return $.ajax({
       method: "POST",
-      context: App,
+      context: this,
       url: "shorten",
       data: formData
     });
@@ -169,7 +169,7 @@ var App = {
   ajaxGetExistingLinksRequest: function (data) {
     return $.ajax({
       method: "GET",
-      context: App,
+      context: this,
       url: "shorten"
     });
   },

@@ -108,7 +108,12 @@ public class LinkController implements HttpRequestHandler {
         if (doc != null) {
             title = doc.title();
         } else {
-            title = "Title not available";
+            title = "";
+        }
+
+        if (title.isEmpty()) {
+            LOGGER.info(METHOD_NAME + "title is empty");
+            title = fullUrl;
         }
 
         LOGGER.info(METHOD_NAME + " return = " + title);

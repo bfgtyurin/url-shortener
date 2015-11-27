@@ -5,10 +5,7 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class LinkDao {
 
@@ -31,17 +28,17 @@ public class LinkDao {
         LOGGER.info(METHOD_NAME + "argument = " + link);
 
         try (Connection connection = dataSource.getConnection()) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_STATEMENT)) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_STATEMENT, Statement.RETURN_GENERATED_KEYS)) {
                 int idx = 1;
                 preparedStatement.setLong(idx++, link.getClicks());
                 preparedStatement.setString(idx++, link.getFullUrl());
                 preparedStatement.setString(idx++, link.getShortUrl());
                 preparedStatement.setString(idx, link.getTitle());
-                preparedStatement.execute();
+                preparedStatement.executeUpdate();
                 ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
                 if (generatedKeys.next()) {
-                    link.setId(generatedKeys.getInt(1));
-                    LOGGER.info(METHOD_NAME +" save = " + link);
+                    link.setId(generatedKeys.getLong(1));
+                    LOGGER.info(METHOD_NAME +"saved = " + link);
                 }
             }
         } catch (SQLException e) {
