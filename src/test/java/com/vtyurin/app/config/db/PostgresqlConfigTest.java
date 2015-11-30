@@ -7,7 +7,7 @@ import static org.junit.Assert.assertNotNull;
 public class PostgresqlConfigTest {
 
     @Test
-    public void shouldReturnSystemVasiableTest() {
+    public void shouldReturnSystemVariableTest() {
         assertNotNull(System.getenv("DATABASE_URL"));
     }
 
