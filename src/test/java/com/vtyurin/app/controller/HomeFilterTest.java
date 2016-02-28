@@ -24,7 +24,6 @@ public class HomeFilterTest {
     public void testIsValidUrlShouldReturnTrue(String validShortUrl) throws Exception {
         HomeFilter homeFilter = new HomeFilter();
         assertTrue(homeFilter.isValidUrl(validShortUrl));
-
     }
 
     @Test
@@ -32,6 +31,5 @@ public class HomeFilterTest {
     public void testIsValidUrlShouldReturnFalse(String invalidShortUrl) throws Exception {
         HomeFilter homeFilter = new HomeFilter();
         assertFalse(homeFilter.isValidUrl(invalidShortUrl));
-
     }
 }

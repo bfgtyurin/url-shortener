@@ -177,13 +177,22 @@ var App = {
   // Utils
 
   getExpiresCookieString: function() {
-    var d = new Date();
-    d.setTime(d.getTime() + (30*24*60*60*1000));
-    return '; expires=' + d.toUTCString();
+    var expired = this.getExpiredDate({days: 30});
+
+    return '; expires=' + expired;
+  },
+
+  getExpiredDate: function(period) {
+    var dayInMillis = 24 * 60 * 60 * 1000;
+    var monthInMillis = dayInMillis  * period.days;
+    var date = new Date();
+    date.setTime(date.getTime() + monthInMillis);
+
+    return date.toUTCString();
   },
 
   getUrlWithStr: function(str) {
-     return window.location.origin + '/' + str;
+    return window.location.origin + '/' + str;
   }
 
 };

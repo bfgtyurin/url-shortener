@@ -48,7 +48,7 @@ public class LinkControllerIntegrationTest {
     public void setUp() {
         try (Connection connection = dataSource.getConnection();
              FileReader fileReader = readSqlTestFile("sql/create-db-test.sql")) {
-            RunScript.execute(connection, fileReader);
+                RunScript.execute(connection, fileReader);
         } catch (IOException | SQLException e) {
             e.printStackTrace();
         }
