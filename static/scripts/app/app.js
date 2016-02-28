@@ -183,12 +183,17 @@ var App = {
   },
 
   getExpiredDate: function(period) {
-    var dayInMillis = 24 * 60 * 60 * 1000;
-    var monthInMillis = dayInMillis  * period.days;
+    var millisInPeriod = this.convertDaysToMillis(period.days);
     var date = new Date();
-    date.setTime(date.getTime() + monthInMillis);
+    date.setTime(date.getTime() + millisInPeriod);
 
     return date.toUTCString();
+  },
+
+  convertDaysToMillis: function(days) {
+    var millisInDay = 24 * 60 * 60 * 1000;
+
+    return millisInDay  * days;
   },
 
   getUrlWithStr: function(str) {
